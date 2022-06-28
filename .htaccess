@@ -1,0 +1,6 @@
+    #Options -MultiViews
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    #RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]    
+    #RewriteRule /_includes/^(.*) /_includes/$1 [QSA,L]
