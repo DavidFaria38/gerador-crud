@@ -4,6 +4,16 @@ class Codeigniter3_contoller
 {
   public bool $validationServerSide;
   public bool $functionDeleteResponseJson;
+  public string $fileNameController;
+  public string $fileNameModel;
+  public string $showNameModel;
+
+  public string $functionNameCreate;
+  public string $functionNameRead;
+  public string $functionNameUpdate;
+  public string $functionNameDelete;
+  public string $functionNameSufix;
+
   private string $dataCreate;
   private string $dataRead;
   private string $dataUpdate;
@@ -11,8 +21,19 @@ class Codeigniter3_contoller
 
   function __construct(array $config = array())
   {
-    $this->validationServerSide = (isset($config['validationServerSide']) && !empty($config['validationServerSide'])) ? TRUE : FALSE;
-    $this->functionDeleteResponseJson = (isset($config['functionDeleteResponseJson']) && !empty($config['functionDeleteResponseJson'])) ? TRUE : FALSE;
+    // Function names
+    $this->functionNameCreate = (isset($config['functionNameCreate']) && !empty($config['functionNameCreate'])) ? $config['functionNameCreate'] : 'insert';
+    $this->functionNameRead = (isset($config['functionNameRead']) && !empty($config['functionNameRead'])) ? $config['functionNameRead'] : 'read';
+    $this->functionNameUpdate = (isset($config['functionNameUpdate']) && !empty($config['functionNameUpdate'])) ? $config['functionNameUpdate'] : 'update';
+    $this->functionNameDelete = (isset($config['functionNameDelete']) && !empty($config['functionNameDelete'])) ? $config['functionNameDelete'] : 'delete';
+    $this->functionNameSufix = (isset($config['functionNameSufix']) && !empty($config['functionNameSufix'])) ? $config['functionNameSufix'] : 'save';
+    // File names
+    $this->fileNameController = (isset($config['fileNameController']) && !empty($config['fileNameController'])) ? $config['fileNameController'] : 'Generic_controller';
+    $this->fileNameModel = (isset($config['fileNameModel']) && !empty($config['fileNameModel'])) ? $config['fileNameModel'] : 'Generic_model';
+    $this->showNameModel = strtolower($this->fileNameModel);
+    // other
+    $this->validationServerSide = (isset($config['validationServerSide']) && $config['validationServerSide']) ? TRUE : FALSE;
+    $this->functionDeleteResponseJson = (isset($config['functionDeleteResponseJson']) && $config['functionDeleteResponseJson']) ? TRUE : FALSE;
   }
 
   public function run(array $dataTable)
@@ -22,7 +43,7 @@ class Codeigniter3_contoller
     $this->dataUpdate = $this->createFunctionUpdate($dataTable);
     $this->dataDelete = $this->createFunctionDelete($dataTable);
 
-    $strFile = $this->strStartFunction($dataTable);
+    $strFile = $this->strStartFunction();
     $strFile .= $this->dataCreate;
     $strFile .= $this->dataRead;
     $strFile .= $this->dataUpdate;
@@ -31,6 +52,7 @@ class Codeigniter3_contoller
 
     return $strFile;
   }
+
   private function createFunctionCreate(array $dataTable)
   {
     $str = $this->strInserir($dataTable);
@@ -71,7 +93,7 @@ class Codeigniter3_contoller
     return "
     <?php
 
-    class ControllerModelo extends CI_Controller
+    class {$this->fileNameController} extends CI_Controller
     {
 
       // private string \$linkRedirecionamento = '';
@@ -79,7 +101,7 @@ class Codeigniter3_contoller
       public function __construct()
       {
         parent::__construct();
-        \$this->load->model('ModelModelo', 'modelo');
+        \$this->load->model('{$this->fileNameModel}', '{$this->showNameModel}');
       }
     ";
   }
@@ -121,7 +143,7 @@ class Codeigniter3_contoller
       $nomeCampoDB = $dataInput['gerbas_CampoNomeDB'];
       $str .= "'{$nomeCampoDB}' => {$arrayFrom}['{$nomeCampoDB}'],\n";
     }
-    $str .= ");\n";
+    $str .= ");";
 
     return $str;
   }
@@ -145,7 +167,7 @@ class Codeigniter3_contoller
   private function strInserir()
   {
     return "
-    public function inserir()
+    public function {$this->functionNameCreate}()
     {
       render_template('cadastrar'); // todo: inserir caminho 
     }
@@ -157,7 +179,7 @@ class Codeigniter3_contoller
     $strDataArray = $this->strPhpArray($dataTable, '$data_post');
 
     $str = "
-    public function inserir_salvar(\$item_id = 0)
+    public function {$this->functionNameCreate}_{$this->functionNameSufix}(\$item_id = 0)
     {
       // \$usr_codigo = session_codigo_usr();
     
@@ -171,7 +193,7 @@ class Codeigniter3_contoller
   
         \$data_insert = {$strDataArray}
   
-        \$linha = \$this->modelo->inserir(\$data_insert);
+        \$linha = \$this->{$this->showNameModel}->inserir(\$data_insert);
   
         if (empty(\$linha)) {
           set_flash_message_danger('error', 'Não foi possivel inserir o registro, tente novamente.');
@@ -191,12 +213,12 @@ class Codeigniter3_contoller
   private function strConsultar()
   {
     $str = "
-    public function consultar()
+    public function {$this->functionNameRead}()
     {
-      \$dados_item = \$this->modelo->consultar();
+      \$dados_item = \$this->{$this->showNameModel}->{$this->functionNameRead}();
 
       \$data_view = array(
-        'modelo' => \$dados_item
+        'data' => \$dados_item
       );
 
       render_template('consultar', \$data_view); // todo: inserir caminho 
@@ -210,7 +232,7 @@ class Codeigniter3_contoller
   private function strAlterar()
   {
     $str = "
-    public function alterar(\$item_id = 0)
+    public function {$this->functionNameUpdate}(\$item_id = 0)
     {
       // \$usr_codigo = session_codigo_usr();
 
@@ -219,7 +241,7 @@ class Codeigniter3_contoller
         redirect(base_url('modelo')); // todo: link redirect
       }
 
-      \$dados_item = \$this->modelo->consultar_por_id(\$item_id);
+      \$dados_item = \$this->{$this->showNameModel}->{$this->functionNameUpdate}(\$item_id);
 
       if (empty(\$dados_item)) {
         set_flash_message_danger('error', 'Registro não encontrado.');
@@ -227,7 +249,7 @@ class Codeigniter3_contoller
       }
 
       \$data_view = array(
-        'modelo' => \$dados_item
+        'data' => \$dados_item
       );
 
       render_template('alterar', \$data_view); // todo: inserir caminho 
@@ -242,21 +264,21 @@ class Codeigniter3_contoller
     $strDataArray = $this->strPhpArray($dataTable, '$data_post');
 
     $str = "
-    public function alterar_salvar(\$item_id = 0)
+    public function {$this->functionNameUpdate}_{$this->functionNameSufix}(\$item_id = 0)
     {
       \$usr_codigo = session_codigo_usr();
 
       {$strDataPhpValidation}
 
       if (!\$this->form_validation->run()) {
-        \$this->consulta(\$item_id);
+        \$this->{$this->functionNameRead}(\$item_id);
       } else {
 
         \$data_post = \$this->input->post();
 
         \$data_insert = {$strDataArray}
 
-        \$linha = \$this->modelo->alterar(\$usr_codigo, \$data_insert);
+        \$linha = \$this->{$this->showNameModel}->{$this->functionNameUpdate}(\$usr_codigo, \$data_insert);
 
         if (empty(\$linha)) {
           set_flash_message_danger('error', 'Não foi possivel inserir o registro, tente novamente.');
@@ -282,7 +304,7 @@ class Codeigniter3_contoller
     $response_set_flashdata = (!$this->functionDeleteResponseJson) ? '//' : '';
 
     $str = "
-    public function remover(\$item_id = 0)
+    public function {$this->functionNameDelete}(\$item_id = 0)
     {
       \$usr_codigo = session_codigo_usr();
   
@@ -297,7 +319,7 @@ class Codeigniter3_contoller
         {$response_set_flashdata} redirect(base_url('modelo'));  // todo: link redirect
       }
   
-      \$dados_item = \$this->modelo->consulta_por_id(\$item_id);
+      \$dados_item = \$this->{$this->showNameModel}->{$this->functionNameRead}(\$item_id);
   
       if (empty(\$dados_item)) {
         \$message_error = 'Registro não encontrado.';
@@ -306,7 +328,7 @@ class Codeigniter3_contoller
         {$response_set_flashdata} redirect(base_url('modelo'));  // todo: link redirect
       }
   
-      \$linha = \$this->modelo->remover(\$item_id);
+      \$linha = \$this->{$this->showNameModel}->{$this->functionNameDelete}(\$item_id);
   
       if (empty(\$linha)) {
         \$message_error = 'Não foi possivel remover o registro.';
