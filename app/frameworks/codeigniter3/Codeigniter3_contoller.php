@@ -30,6 +30,9 @@ class Codeigniter3_contoller
     // File names
     $this->fileNameController = (isset($config['fileNameController']) && !empty($config['fileNameController'])) ? $config['fileNameController'] : 'Generic_controller';
     $this->fileNameModel = (isset($config['fileNameModel']) && !empty($config['fileNameModel'])) ? $config['fileNameModel'] : 'Generic_model';
+    
+    $this->fileNameController = ucfirst($this->fileNameController);
+    $this->fileNameModel = ucfirst($this->fileNameModel);
     $this->showNameModel = strtolower($this->fileNameModel);
     // other
     $this->validationServerSide = (isset($config['validationServerSide']) && $config['validationServerSide']) ? TRUE : FALSE;
@@ -119,12 +122,12 @@ class Codeigniter3_contoller
 
       foreach ($dataTable as $key => $dataInput) {
 
-        $nomeCampoDB = $dataInput['gerbas_CampoNomeDB'];
-        $nomeCampoHTML = $dataInput['gerbas_campoTitleHTML'];
-        $inputRequired = ($dataInput['gerbas_required']) ? '|required' : '';
-        $inputEmail = ($dataInput['gerbas_tipoConsistencia'] == TYPE_EMAIL) ? '|valid_email' : '';
-        $inputMaxLength = (!empty($dataInput['gerbas_tamanhoMax'])) ? "|max_length[{$dataInput['gerbas_tamanhoMax']}]" : '';
-        $inputMinLength = (!empty($dataInput['gerbas_tamanhoMin'])) ? "|max_length[{$dataInput['gerbas_tamanhoMin']}]" : '';
+        $nomeCampoDB = $dataInput[GERADOR_COL_NAMEFIELD_DB];
+        $nomeCampoHTML = $dataInput[GERADOR_COL_NAMEFIELD_HTML];
+        $inputRequired = ($dataInput[GERADOR_COL_REQUIRED]) ? '|required' : '';
+        $inputEmail = ($dataInput[GERADOR_COL_TYPE_VALIDATION] == TYPE_EMAIL) ? '|valid_email' : '';
+        $inputMaxLength = (!empty($dataInput[GERADOR_COL_MAX_LENGTH])) ? "|max_length[{$dataInput[GERADOR_COL_MAX_LENGTH]}]" : '';
+        $inputMinLength = (!empty($dataInput[GERADOR_COL_MIN_LENGTH])) ? "|max_length[{$dataInput[GERADOR_COL_MIN_LENGTH]}]" : '';
 
         $strDataPhpValidation .= "\$this->form_validation->set_rules('{$nomeCampoDB}', '{$nomeCampoHTML}', 'trim{$inputRequired}{$inputEmail}{$inputMinLength}{$inputMaxLength}');";
         $strDataPhpValidation .= "\n";
