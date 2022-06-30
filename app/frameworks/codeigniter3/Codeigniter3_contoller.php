@@ -193,7 +193,7 @@ class Codeigniter3_contoller
   
         \$data_insert = {$strDataArray}
   
-        \$linha = \$this->{$this->showNameModel}->inserir(\$data_insert);
+        \$linha = \$this->{$this->showNameModel}->{$this->functionNameCreate}(\$data_insert);
   
         if (empty(\$linha)) {
           set_flash_message_danger('error', 'Não foi possivel inserir o registro, tente novamente.');
