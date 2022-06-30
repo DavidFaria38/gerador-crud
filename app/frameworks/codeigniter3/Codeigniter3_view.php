@@ -31,18 +31,18 @@ class Codeigniter3_view
   public function run(array $dataTable)
   {
     $this->dataCreate = $this->createViewCreate($dataTable);
-    // $this->dataUpdate = $this->createViewUpdate($dataTable);
-    // $this->dataRead = $this->createViewRead($dataTable);
+    $this->dataUpdate = $this->createViewUpdate($dataTable);
+    $this->dataRead = $this->createViewRead($dataTable);
 
-    return '';
-    // return $this->join();
+    // return 'nada retornado das views';
+    return $this->join();
   }
   private function createViewCreate(array $dataTable)
   {
     $html = $this->htmlStart();
     $html .= $this->htmlCreate($dataTable);
     $html .= $this->htmlEnd();
-    $html .= $this->validationClientSide($dataTable);
+    // $html .= $this->validationClientSide($dataTable);
 
     // var_dump("<textarea>{$html}</textarea>"); die;
 
@@ -53,9 +53,9 @@ class Codeigniter3_view
     $html = $this->htmlStart();
     $html .= $this->htmlUpdate($dataTable);
     $html .= $this->htmlEnd();
-    $html .= $this->validationClientSide($dataTable);
-
-    // var_dump("<textarea>{$html}</textarea>"); die;
+    // $html .= $this->validationClientSide($dataTable);
+    
+    // var_dump("<textarea cols=\"200\" rows=\"200\">{$html}</textarea>"); die;
 
     return $html;
   }
@@ -65,7 +65,7 @@ class Codeigniter3_view
     $html .= $this->htmlTable($dataTable);
     $html .= $this->htmlEnd();
 
-    // var_dump("<textarea>{$html}</textarea>"); die;
+    // var_dump("<textarea cols=\"200\" rows=\"200\">{$html}</textarea>"); die;
     return $html;
   }
   private function join()
@@ -153,103 +153,30 @@ class Codeigniter3_view
     $html_create = <<<EOT
     <?= form_open(base_url('/inserir')); ?>
 
-      <div class="form-floating">
-        <input type="text" class="form-control" placeholder="" minlength="" maxlength="" name="text" id="text" value="" required>
-        <label for="text" class="form-label">text</label>
-      </div>
-      <div class="form-floating">
-        <textarea type="textarea" class="form-control" placeholder="" minlength="" maxlength="" name="textarea" id="textarea" required></textarea>
-        <label for="textarea" class="form-label">textarea</label>
-      </div>
-
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="checkbox" id="checkbox" value="">
-        <label for="checkbox" class="form-check-label">checkbox</label>
-      </div>
-      <div class="form-check">
-        <input type="radio" class="form-check-input" name="radio" id="radio" value="">
-        <label for="radio" class="form-check-label">radio1</label>
-      </div>
-      <div class="form-check">
-        <input type="radio" class="form-check-input" name="radio" id="radio" value="">
-        <label for="radio" class="form-check-label">radio2</label>
-      </div>
-
-
-      <div class="form-floating">
-        <input type="number" class="form-control" placeholder="" min="" max="" name="number" id="number" value="">
-        <label for="number" class="form-label">number</label>
-      </div>
-      <div class="form-floating">
-        <input type="email" class="form-control" placeholder="" minlength="" maxlength="" name="email" id="email" value="">
-        <label for="email" class="form-label">email</label>
-      </div>
-
-      <div class="form-group">
-        <label for="hidden" class="form-label">hidden</label>
-        <input type="hidden" class="form-control" name="hidden" id="hidden" value="">
-      </div>
-
-      <div class="form-group">
-        <label for="range" class="form-label">range</label>
-        <input type="range" class="form-range" min="0" max="100" name="range" id="range" value="">
-      </div>
-
-      <div class="form-floating">
-        <select class="form-select" name="select" id="select">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-        <label for="select" class="form-label">select</label>
-      </div>
-
-      <div class="form-floating">
-        <input type="datetime-local" class="form-control" placeholder="" name="datetime-local" id="datetime-local" value="">
-        <label for="datetime-local" class="form-label">datetime-local</label>
-      </div>
-      <div class="form-floating">
-        <input type="date" class="form-control" placeholder="" min="0" max="100" name="date" id="date" value="">
-        <label for="date" class="form-label">date</label>
-      </div>
-      <div class="form-floating">
-        <input type="time" class="form-control" placeholder="" min="0" max="100" name="time" id="time" value="">
-        <label for="time" class="form-label">time</label>
-      </div>
-      <div class="form-floating">
-        <input type="week" class="form-control" placeholder="" min="0" max="100" name="week" id="week" value="">
-        <label for="week" class="form-label">week</label>
-      </div>
-      <div class="form-floating">
-        <input type="month" class="form-control" placeholder="" min="0" max="100" name="month" id="month" value="">
-        <label for="month" class="form-label">month</label>
-      </div>
-
-
-
-      <div class="form-group">
-        <label for="file" class="form-label">file</label>
-        <input type="file" class="form-control" name="file" id="file" value="">
-      </div>
-      <div class="form-group">
-        <label for="color" class="form-label">color</label>
-        <input type="color" class="form-control form-control-color" name="color" id="color" value="">
-      </div>
-      <div class="form-floating">
-        <input type="password" class="form-control" placeholder="" minlength="" maxlength="" name="password" id="password" value="">
-        <label for="password" class="form-label">password</label>
-      </div>
-
-      <div class="d-flex justify-content-center pt-3">
-        <button type="submit" class="btn btn-primary btn-submit">Salvar</button>
-      </div>
+    {$str_inputs_create}
     
     <?= form_close(); ?>
 
     EOT;
 
     return $html_create;
+  }
+  
+  private function htmlUpdate(array $dataTable)
+  {
+
+    $str_inputs_update = $this->strGetInputUpdate($dataTable);
+
+    $html_update = <<<EOT
+    <?= form_open(base_url('/inserir')); ?>
+
+    {$str_inputs_update}
+    
+    <?= form_close(); ?>
+
+    EOT;
+
+    return $html_update;
   }
 
   private function validationClientSide(array $dataTable)
@@ -258,32 +185,25 @@ class Codeigniter3_view
   }
 
   // funções aux
-  private function getRegistroPrimaryKey(array $dataTable)
-  {
-    $arr_registro = array_filter($dataTable, function ($value) { // retornar registro que possui chave primaria
-      return $value[GERADOR_COL_PK];
-    }, ARRAY_FILTER_USE_BOTH);
-
-    if (empty($arr_registro)) {
-      exit('ERROR:: Não existe um registro com chave primaria; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()');
-    }
-    if (count($arr_registro) > 1) {
-      exit('ERROR:: Existem duas chaves primaria para a mesma tabela; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()');
-    }
-
-    return $arr_registro[0];
-  }
-
   private function strGetInputCreate(array $dataTable)
   {
-    // retorna os registros que são chave primaria ou não possuem campo hidden 
+    // retorna os registros que não possuem campo hidden 
     $arr_table_data_selected = array_filter($dataTable, function ($value) {
-      return $value[GERADOR_COL_PK] || !$value[GERADOR_COL_HIDDEN];
+      return !$value[GERADOR_COL_HIDDEN];
     }, ARRAY_FILTER_USE_BOTH);
 
     $html_inputs = "";
-    // var_dump('<pre>', $arr_table_data_selected); die;
+    
     foreach ($arr_table_data_selected as $key => $table_input) {
+      $input_type = $table_input[GERADOR_COL_TYPEFIELD_HTML];
+
+      $attribute_minMax_type = HTML_INPUT_TYPE_LIST[$input_type]['attr_minMax'];
+
+      $min_value = ($attribute_minMax_type == 'value') ? $table_input[GERADOR_COL_MIN_LENGTH] : '';
+      $max_value = ($attribute_minMax_type == 'value') ? $table_input[GERADOR_COL_MAX_LENGTH] : '';
+      $min_length = ($attribute_minMax_type == 'length') ? $table_input[GERADOR_COL_MIN_LENGTH] : '';
+      $max_length = ($attribute_minMax_type == 'length') ? $table_input[GERADOR_COL_MAX_LENGTH] : '';
+
       $input_config = array(
         'label' => $table_input[GERADOR_COL_NAMEFIELD_HTML],
         'type' => $table_input[GERADOR_COL_TYPEFIELD_HTML],
@@ -291,21 +211,65 @@ class Codeigniter3_view
         'name' => $table_input[GERADOR_COL_NAMEFIELD_DB],
         'class' => '',
         'value' => '',
-        'placeholder' => '',
+        'placeholder' => TRUE,
         'required' => $table_input[GERADOR_COL_REQUIRED],
         'disabled' => '',
         'readonly' => '',
-        'minValue' => '',
-        'maxValue' => '',
-        'minLength' => '',
-        'maxLength' => '',
+        'minValue' => $min_value,
+        'maxValue' => $max_value,
+        'minLength' => $min_length,
+        'maxLength' => $max_length,
       );
       // var_dump('<pre>', $input_config); die;
 
       $html_inputs .= $this->strMakeInput($input_config);
       
     }
-    var_dump($html_inputs); die;
+    // var_dump("<textarea cols=\"200\" rows=\"200\">{$html_inputs}</textarea>"); die;
+    return $html_inputs;
+  }
+  
+  private function strGetInputUpdate(array $dataTable)
+  {
+    // retorna os registros que são chave primaria ou não possuem campo hidden 
+    $arr_table_data_selected = array_filter($dataTable, function ($value) {
+      return $value[GERADOR_COL_PK] || !$value[GERADOR_COL_HIDDEN];
+    }, ARRAY_FILTER_USE_BOTH);
+
+    $html_inputs = "";
+    
+    foreach ($arr_table_data_selected as $key => $table_input) {
+      $input_type = $table_input[GERADOR_COL_TYPEFIELD_HTML];
+
+      $attribute_minMax_type = HTML_INPUT_TYPE_LIST[$input_type]['attr_minMax'];
+
+      $min_value = ($attribute_minMax_type == 'value') ? $table_input[GERADOR_COL_MIN_LENGTH] : '';
+      $max_value = ($attribute_minMax_type == 'value') ? $table_input[GERADOR_COL_MAX_LENGTH] : '';
+      $min_length = ($attribute_minMax_type == 'length') ? $table_input[GERADOR_COL_MIN_LENGTH] : '';
+      $max_length = ($attribute_minMax_type == 'length') ? $table_input[GERADOR_COL_MAX_LENGTH] : '';
+
+      $input_config = array(
+        'label' => $table_input[GERADOR_COL_NAMEFIELD_HTML],
+        'type' => $table_input[GERADOR_COL_TYPEFIELD_HTML],
+        'id' => $table_input[GERADOR_COL_NAMEFIELD_DB],
+        'name' => $table_input[GERADOR_COL_NAMEFIELD_DB],
+        'class' => '',
+        'value' => $table_input[GERADOR_COL_NAMEFIELD_DB],
+        'placeholder' => TRUE,
+        'required' => $table_input[GERADOR_COL_REQUIRED],
+        'disabled' => '',
+        'readonly' => '',
+        'minValue' => $min_value,
+        'maxValue' => $max_value,
+        'minLength' => $min_length,
+        'maxLength' => $max_length,
+      );
+      // var_dump('<pre>', $input_config); die;
+
+      $html_inputs .= $this->strMakeInput($input_config);
+      
+    }
+    // var_dump("<textarea cols=\"200\" rows=\"200\">{$html_inputs}</textarea>"); die;
     return $html_inputs;
   }
 
@@ -316,6 +280,7 @@ class Codeigniter3_view
     $type = $input_config['type'];
     $id = $input_config['id'];
     $name = $input_config['name'];
+    $value = (isset($input_config['value']) && !empty($input_config['value'])) ? $input_config['value'] : '';
     $class_input = (isset($input_config['class']) && !empty($input_config['class'])) ? $input_config['class'] : '';
     $class_label = "form-label";
 
@@ -323,11 +288,11 @@ class Codeigniter3_view
     $disabled = (isset($input_config['disabled']) && !empty($input_config['disabled'])) ? " disabled" : '';
     $readonly = (isset($input_config['readonly']) && !empty($input_config['readonly'])) ? " readonly" : '';
 
-    $placeholder = (isset($input_config['placeholder']) && !empty($input_config['placeholder'])) ? " placeholder=\"{$input_config['placeholder']}\"" : '';
-    $minValue = (isset($input_config['minValue']) && !empty($input_config['minValue'])) ? " min=\"{$input_config['minValue']}\"" : '';
-    $maxValue = (isset($input_config['maxValue']) && !empty($input_config['maxValue'])) ? " max=\"{$input_config['maxValue']}\"" : '';
-    $minLength = (isset($input_config['minLength']) && !empty($input_config['minLength'])) ? " minLength=\"{$input_config['minLength']}\"" : '';
-    $maxLength = (isset($input_config['maxLength']) && !empty($input_config['maxLength'])) ? " maxLength=\"{$input_config['maxLength']}\"" : '';
+    $placeholder = (isset($input_config['placeholder']) && $input_config['placeholder'] != '') ? " placeholder=\"{$input_config['placeholder']}\"" : '';
+    $minValue = (isset($input_config['minValue']) && $input_config['minValue'] != '') ? " min=\"{$input_config['minValue']}\"" : '';
+    $maxValue = (isset($input_config['maxValue']) && $input_config['maxValue'] != '') ? " max=\"{$input_config['maxValue']}\"" : '';
+    $minLength = (isset($input_config['minLength']) && $input_config['minLength'] != '') ? " minLength=\"{$input_config['minLength']}\"" : '';
+    $maxLength = (isset($input_config['maxLength']) && $input_config['maxLength'] != '') ? " maxLength=\"{$input_config['maxLength']}\"" : '';
 
     if ($type == 'select') {
 
@@ -336,7 +301,7 @@ class Codeigniter3_view
 
       $input = <<< EOT
       <div class="form-floating">
-        <select class="form-select {$class_input}" name="{$id}" id="{$id}">
+        <select class="form-select {$class_input}" name="{$name}" id="{$id}">
           <option selected>Selecione</option>
           <?php foreach (\$data as \$key => \$options) : ?>
             <option value="<?= \$option->{$field_foreign_key} ?>"><?= \$option->{$field_foreign_value} ?></option>
@@ -346,32 +311,32 @@ class Codeigniter3_view
       </div>
       EOT;
 
-      var_dump("<textarea>select<br>{$input}</textarea>");
-      die;
     } else if ($type == 'textarea') {
-
-      $value = (isset($input_config['value']) && !empty($input_config['value'])) ? $input_config['value'] : '';
 
       $input = <<< EOT
       <div class="form-floating">
-        <textarea type="textarea" class="form-control {$class_input}" name="{$id}" id="{$id}"{$placeholder}{$minLength}{$maxLength}{$disabled}{$readonly}{$required}>$value</textarea>
+        <textarea type="textarea" class="form-control {$class_input}" name="{$name}" id="{$id}"{$placeholder}{$minLength}{$maxLength}{$disabled}{$readonly}{$required}>$value</textarea>
         <label for="{$id}" class="{$class_label}">{$label}</label>
-      </div>
+      </div>\n
       EOT;
     } else {
 
-      $value = (isset($input_config['value']) && !empty($input_config['value'])) ? "value=\"{$input_config['value']}\"" : '';
+      $value = (isset($input_config['value']) && !empty($input_config['value'])) ? " value=\"<?= \$data->{$input_config['value']} ?>\"" : '';
 
+      // seleção do tipo de classe a ser inserido
       if ($type == 'checkbox' || $type == 'radio') {
         $class_input = "form-check-input";
         $class_label = "form-check-label";
       } else if ($type == 'range') {
         $class_input = "form-range";
-      } else if ($type == 'hidden') {
+      } 
+      
+      // Retornar input simplificado se for tipo hidden
+      if ($type == 'hidden') {
         $input = <<< EOT
         <div class="form-floating">
-          <input type="{$type}" class="form-control {$class_input}" name="{$id}" id="{$id}"{$placeholder}{$minLength}{$maxLength}{$disabled}{$readonly}{$required}>
-        </div>
+          <input type="{$type}" name="{$name}" id="{$id}"{$value}{$required}>
+        </div>\n
         EOT;
 
         return $input;
@@ -379,9 +344,9 @@ class Codeigniter3_view
 
       $input = <<< EOT
         <div class="form-floating">
-          <input type="{$type}" class="form-control {$class_input}" name="{$id}" id="{$id}"{$placeholder}{$minLength}{$maxLength}{$disabled}{$readonly}{$required}>
+          <input type="{$type}" class="form-control {$class_input}" name="{$id}" id="{$id}"{$value}{$placeholder}{$minLength}{$maxLength}{$minValue}{$maxValue}{$disabled}{$readonly}{$required}>
           <label for="{$id}" class="$class_label">{$label}</label>
-        </div>
+        </div>\n
         EOT;
     }
 
@@ -427,5 +392,21 @@ class Codeigniter3_view
 
       return $html_table_body;
     }
+  }
+
+  private function getRegistroPrimaryKey(array $dataTable)
+  {
+    $arr_registro = array_filter($dataTable, function ($value) { // retornar registro que possui chave primaria
+      return $value[GERADOR_COL_PK];
+    }, ARRAY_FILTER_USE_BOTH);
+
+    if (empty($arr_registro)) {
+      exit('ERROR:: Não existe um registro com chave primaria; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()');
+    }
+    if (count($arr_registro) > 1) {
+      exit('ERROR:: Existem duas chaves primaria para a mesma tabela; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()');
+    }
+
+    return $arr_registro[0];
   }
 }
