@@ -32,10 +32,10 @@ class Codeigniter3_model
 
   public function run(array $dataTable)
   {
-    $dataCreate = $this->createFunctionCreate($dataTable);
-    $dataRead = $this->createFunctionRead($dataTable);
-    $dataUpdate = $this->createFunctionUpdate($dataTable);
-    $dataDelete = $this->createFunctionDelete($dataTable);
+    $this->dataCreate = $this->createFunctionCreate($dataTable);
+    $this->dataRead = $this->createFunctionRead($dataTable);
+    $this->dataUpdate = $this->createFunctionUpdate($dataTable);
+    $this->dataDelete = $this->createFunctionDelete($dataTable);
 
     $strFile = $this->strStartFunction();
     $strFile .= $this->dataCreate;
@@ -57,7 +57,7 @@ class Codeigniter3_model
 
         \$db->insert('$table_name', \$data_insert); 
 
-        return \$db->affected_rows();
+        return \$db->inserted_id();
     }
     ";
     // var_dump("<textarea> $str </textarea>");
@@ -68,7 +68,9 @@ class Codeigniter3_model
   private function createFunctionRead(array $dataTable) // todo: to be done
   {
     $table_name = $this->getTableName($dataTable);
-    $table_foreign_data = $this->getTableForeignData($dataTable);
+    $str_join = $this->strJoinForeignData($dataTable);
+    $item_pk = $this->getRegistroPrimaryKey($dataTable);
+    $field_pk = $item_pk[GERADOR_COL_NAMEFIELD_DB];
 
     $str = "
     public function consulta(\$item_id = NULL)
@@ -77,13 +79,12 @@ class Codeigniter3_model
   
       \$db->select('*');
       \$db->from('{$table_name}');
-      \$db->join('tabela_join as b', 'a.X = b.Y'); // obs: ser possuir tabela estrangeira
-      
-      if (\$item_id) \$db->where('coluna', \$item_id); // todo: inserir coluna de tablea  
+      {$str_join}
+      if (\$item_id) \$db->where('{$field_pk}', \$item_id);
       
       \$data = \$db->get->result();
   
-      if (\$item_id && count(\$data) > 0) return \$data[0];
+      if (\$item_id && count(\$data) == 1) return \$data[0]; // retornar primeiro item se for pesquisa por id
       return \$data;
     }
     ";
@@ -94,7 +95,21 @@ class Codeigniter3_model
   }
   private function createFunctionUpdate(array $dataTable)
   {
-    $str = $this->strAlterar($dataTable);
+    $table_name = $this->getTableName($dataTable);
+    $item_pk = $this->getRegistroPrimaryKey($dataTable);
+    $field_pk = $item_pk[GERADOR_COL_NAMEFIELD_DB];
+
+    $str = "
+    public function {$this->functionNameUpdate}(array \$data_update)
+    {
+        \$db = \$this->db;
+
+        \$db->where('{$field_pk}', \$data_update['{$field_pk}']);
+        \$db->update('$table_name', \$data_update); 
+
+        return \$db->affected_rows();
+    }
+    ";
     // var_dump("<textarea> $str </textarea>");
     // die;
 
@@ -102,7 +117,21 @@ class Codeigniter3_model
   }
   private function createFunctionDelete(array $dataTable)
   {
-    $str = $this->strRemover($dataTable);
+    $table_name = $this->getTableName($dataTable);
+    $item_pk = $this->getRegistroPrimaryKey($dataTable);
+    $field_pk = $item_pk[GERADOR_COL_NAMEFIELD_DB];
+
+    $str = "
+    public function {$this->functionNameDelete}(\$item_id)
+    {
+        \$db = \$this->db;
+
+        \$db->where('{$field_pk}', \$item_id);
+        \$db->delete('$table_name'); 
+
+        return \$db->affected_rows();
+    }
+    ";
     // var_dump("<textarea> $str </textarea>");
     // die;
 
@@ -124,43 +153,6 @@ class Codeigniter3_model
   }
 
   /* Funções auxiliares */
-  private function strPhpValidation(array $dataTable)
-  {
-
-    if ($this->validationServerSide) {
-      $strDataPhpValidation = "";
-
-      foreach ($dataTable as $key => $dataInput) {
-
-        $nomeCampoDB = $dataInput['gerbas_CampoNomeDB'];
-        $nomeCampoHTML = $dataInput['gerbas_campoTitleHTML'];
-        $inputRequired = ($dataInput['gerbas_required']) ? '|required' : '';
-        $inputEmail = ($dataInput['gerbas_tipoConsistencia'] == TYPE_EMAIL) ? '|valid_email' : '';
-        $inputMaxLength = (!empty($dataInput['gerbas_tamanhoMax'])) ? "|max_length[{$dataInput['gerbas_tamanhoMax']}]" : '';
-        $inputMinLength = (!empty($dataInput['gerbas_tamanhoMin'])) ? "|max_length[{$dataInput['gerbas_tamanhoMin']}]" : '';
-
-        $strDataPhpValidation .= "\$this->form_validation->set_rules('{$nomeCampoDB}', '{$nomeCampoHTML}', 'trim{$inputRequired}{$inputEmail}{$inputMinLength}{$inputMaxLength}');";
-        $strDataPhpValidation .= "\n";
-      }
-      return $strDataPhpValidation;
-    } else {
-      return "";
-    }
-  }
-
-  private function strPhpArray(array $dataTable, string $arrayFrom = '$data')
-  {
-    $str = "array(";
-
-    foreach ($dataTable as $key => $dataInput) {
-      $nomeCampoDB = $dataInput['gerbas_CampoNomeDB'];
-      $str .= "'{$nomeCampoDB}' => {$arrayFrom}['{$nomeCampoDB}'],\n";
-    }
-    $str .= ");";
-
-    return $str;
-  }
-
   private function getRegistroPrimaryKey(array $dataTable)
   {
     $arr_registro = array_filter($dataTable, function ($value) { // retornar registro que possui chave primaria
@@ -191,12 +183,26 @@ class Codeigniter3_model
     return $table_name;
   }
 
-  private function getTableForeignData(array $dataTable)
+  private function strJoinForeignData(array $dataTable)
   {
+    $str_join = "";
+
     $arr_table_foreign_data = array_filter($dataTable, function ($value) { // retornar registro que possuem tabela estrangeira
       return !empty($value[GERADOR_COL_NAMETABLE_FOREIGN]);
     }, ARRAY_FILTER_USE_BOTH);
 
-    return $arr_table_foreign_data;
+    // var_dump('<pre>', $arr_table_foreign_data); die;
+
+    foreach ($arr_table_foreign_data as $key => $data_input) { // Gerar joins com tabelas estrangeiras
+      $current_table_name = $data_input[GERADOR_COL_NAMETABLE];
+      $current_field_name = $data_input[GERADOR_COL_NAMEFIELD_DB];
+      $foreign_table_name = $data_input[GERADOR_COL_NAMETABLE_FOREIGN];
+      $foreign_primary_key_field_name = $data_input[GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE];
+      // $foreign_field_value = $data_input[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE];
+
+      $str_join .= "\$db->join('{$foreign_table_name}', '{$current_table_name}.{$current_field_name} = {$foreign_table_name}.{$foreign_primary_key_field_name}');\n";
+    }
+
+    return $str_join;
   }
 }
