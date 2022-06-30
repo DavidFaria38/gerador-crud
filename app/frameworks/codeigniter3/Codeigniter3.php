@@ -20,17 +20,17 @@ class Codeigniter3 implements Interface_framework
   {
     $controller = new Codeigniter3_contoller();
     $model = new Codeigniter3_model();
-    // $view = new Codeigniter3_view();
+    $view = new Codeigniter3_view();
 
-    $this->dataController = $controller->run($dataTable);
+    // $this->dataController = $controller->run($dataTable);
     // $this->dataModel = $model->run($dataTable);
-    // $this->dataView = $view->run($dataTable);
+    $this->dataView = $view->run($dataTable);
 
     // $this->makeFiles();
 
-    var_dump("<textarea> $this->dataController </textarea>");
+    // var_dump("<textarea> $this->dataController </textarea>");
     // var_dump("<textarea> $this->dataModel </textarea>");
-    // var_dump("<textarea> $this->dataView </textarea>");
+    var_dump("<textarea> $this->dataView </textarea>");
     // die;
   }
   public function makeFiles()
