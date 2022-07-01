@@ -1,16 +1,22 @@
 <?php
 
+defined('DB_SERVERNAME') or define('DB_SERVERNAME', 'localhost');
+defined('DB_USERNAME') or define('DB_USERNAME', 'root');
+defined('DB_PASSWORD') or define('DB_PASSWORD', '');
+defined('DB_NAME') or define('DB_NAME', 'modelo');
+
+
 defined('FRAMEWORK_LIST') or define('FRAMEWORK_LIST', array(
   'CODEIGNITER_3' => array(
     'name' => 'CODEIGNITER_3',
     'title' => 'Codeigniter 3',
     'path' => 'Codeigniter3.php',
   ),
-  'CODEIGNITER_4' => array(
-    'name' => 'CODEIGNITER_4',
-    'title' => 'Codeigniter 4',
-    'path' => 'Codeigniter4.php',
-  ),
+  // 'CODEIGNITER_4' => array(
+  //   'name' => 'CODEIGNITER_4',
+  //   'title' => 'Codeigniter 4',
+  //   'path' => 'Codeigniter4.php',
+  // ),
 ));
 
 defined('HTML_INPUT_TYPE_LIST') or define('HTML_INPUT_TYPE_LIST', array(
@@ -35,6 +41,7 @@ defined('HTML_INPUT_TYPE_LIST') or define('HTML_INPUT_TYPE_LIST', array(
 
 defined('TYPE_EMAIL') or define('TYPE_EMAIL', 'email');
 
+defined('GERADOR_DB_TABLE') or define('GERADOR_DB_TABLE', 'gerador_base');
 defined('GERADOR_COL_ID') or define('GERADOR_COL_ID', 'gerbas_codigo');
 defined('GERADOR_COL_NAMETABLE') or define('GERADOR_COL_NAMETABLE', 'gerbas_nomeTabelaDB');
 defined('GERADOR_COL_NAMEFIELD_DB') or define('GERADOR_COL_NAMEFIELD_DB', 'gerbas_CampoNomeDB');
