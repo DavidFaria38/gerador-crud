@@ -4,9 +4,15 @@ class Codeigniter3_contoller
 {
   public bool $validationServerSide;
   public bool $functionDeleteResponseJson;
+  
   public string $fileNameController;
   public string $fileNameModel;
   public string $showNameModel;
+  
+  public string $fileNameViewCreate;
+  public string $fileNameViewRead;
+  public string $fileNameViewUpdate;
+  public string $dirView;
 
   public string $functionNameCreate;
   public string $functionNameRead;
@@ -22,21 +28,23 @@ class Codeigniter3_contoller
   function __construct(array $config = array())
   {
     // Function names
-    $this->functionNameCreate = (isset($config['functionNameCreate']) && !empty($config['functionNameCreate'])) ? $config['functionNameCreate'] : 'insert';
-    $this->functionNameRead = (isset($config['functionNameRead']) && !empty($config['functionNameRead'])) ? $config['functionNameRead'] : 'read';
-    $this->functionNameUpdate = (isset($config['functionNameUpdate']) && !empty($config['functionNameUpdate'])) ? $config['functionNameUpdate'] : 'update';
-    $this->functionNameDelete = (isset($config['functionNameDelete']) && !empty($config['functionNameDelete'])) ? $config['functionNameDelete'] : 'delete';
-    $this->functionNameSufix = (isset($config['functionNameSufix']) && !empty($config['functionNameSufix'])) ? $config['functionNameSufix'] : 'save';
+    $this->functionNameCreate = $config['functionNameCreate'];
+    $this->functionNameRead = $config['functionNameRead'];
+    $this->functionNameUpdate = $config['functionNameUpdate'];
+    $this->functionNameDelete = $config['functionNameDelete'];
+    $this->functionNameSufix = $config['functionNameSufix'];
     // File names
-    $this->fileNameController = (isset($config['fileNameController']) && !empty($config['fileNameController'])) ? $config['fileNameController'] : 'Generic_controller';
-    $this->fileNameModel = (isset($config['fileNameModel']) && !empty($config['fileNameModel'])) ? $config['fileNameModel'] : 'Generic_model';
-    
-    $this->fileNameController = ucfirst($this->fileNameController);
-    $this->fileNameModel = ucfirst($this->fileNameModel);
+    $this->fileNameController = ucfirst($config['fileNameController']);
+    $this->fileNameModel = ucfirst($config['fileNameModel']);
     $this->showNameModel = strtolower($this->fileNameModel);
+
+    $this->fileNameViewCreate = $config['fileNameViewCreate'];
+    $this->fileNameViewRead = $config['fileNameViewRead'];
+    $this->fileNameViewUpdate = $config['fileNameViewUpdate'];
+    $this->dirView = $config['directoryView'];
     // other
-    $this->validationServerSide = (isset($config['validationServerSide']) && $config['validationServerSide']) ? TRUE : FALSE;
-    $this->functionDeleteResponseJson = (isset($config['functionDeleteResponseJson']) && $config['functionDeleteResponseJson']) ? TRUE : FALSE;
+    $this->validationServerSide = $config['validationServerSide'];
+    $this->functionDeleteResponseJson = $config['functionDeleteResponseJson'];
   }
 
   public function run(array $dataTable)
@@ -91,7 +99,7 @@ class Codeigniter3_contoller
     return $str;
   }
 
-  private function strStartFunction() // todo: fazer gerar o nome do model correto
+  private function strStartFunction()
   {
     return "
     <?php
@@ -172,7 +180,7 @@ class Codeigniter3_contoller
     return "
     public function {$this->functionNameCreate}()
     {
-      render_template('cadastrar'); // todo: inserir caminho 
+      render_template('{$this->dirView}/{$this->fileNameViewCreate}');
     }
     ";
   }
@@ -189,7 +197,7 @@ class Codeigniter3_contoller
       {$strDataPhpValidation}
 
       if (!\$this->form_validation->run()) {
-        \$this->consulta(\$item_id);
+        \$this->{$this->functionNameCreate}(\$item_id);
       } else {
   
         \$data_post = \$this->input->post();
@@ -200,10 +208,10 @@ class Codeigniter3_contoller
   
         if (empty(\$linha)) {
           set_flash_message_danger('error', 'Não foi possivel inserir o registro, tente novamente.');
-          redirect(base_url('inserir')); // todo: link redirect
+          redirect(base_url()); // todo: link redirect
         } else {
           set_flash_message_success('success', 'Registro inserido com sucesso!');
-          redirect(base_url('modelo')); // todo: link redirect
+          redirect(base_url()); // todo: link redirect
         }
       }
     }
@@ -224,7 +232,7 @@ class Codeigniter3_contoller
         'data' => \$dados_item
       );
 
-      render_template('consultar', \$data_view); // todo: inserir caminho 
+      render_template('{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
     }
     ";
 
@@ -241,21 +249,21 @@ class Codeigniter3_contoller
 
       if (empty(\$item_id)) {
         set_flash_message_danger('error', 'Item não encontrado.');
-        redirect(base_url('modelo')); // todo: link redirect
+        redirect(base_url()); // todo: link redirect
       }
 
       \$dados_item = \$this->{$this->showNameModel}->{$this->functionNameUpdate}(\$item_id);
 
       if (empty(\$dados_item)) {
         set_flash_message_danger('error', 'Registro não encontrado.');
-        redirect(base_url('modelo')); // todo: link redirect
+        redirect(base_url()); // todo: link redirect
       }
 
       \$data_view = array(
         'data' => \$dados_item
       );
 
-      render_template('alterar', \$data_view); // todo: inserir caminho 
+      render_template({$this->dirView}/{$this->fileNameViewUpdate}, \$data_view);
     }
     ";
 
@@ -285,10 +293,10 @@ class Codeigniter3_contoller
 
         if (empty(\$linha)) {
           set_flash_message_danger('error', 'Não foi possivel inserir o registro, tente novamente.');
-          redirect(base_url('inserir')); // todo: link redirect
+          redirect(base_url()); // todo: link redirect
         } else {
           set_flash_message_success('success', 'Registro inserido com sucesso!');
-          redirect(base_url('modelo')); // todo: link redirect
+          redirect(base_url()); // todo: link redirect
         }
       }
     }
@@ -319,7 +327,7 @@ class Codeigniter3_contoller
         \$message_error = 'Registro não encontrado.';
         {$response_json} exit(response_json(array('error' => \$message_error)));
         {$response_set_flashdata} set_flash_message_danger('error', \$message_error);
-        {$response_set_flashdata} redirect(base_url('modelo'));  // todo: link redirect
+        {$response_set_flashdata} redirect(base_url());  // todo: link redirect
       }
   
       \$dados_item = \$this->{$this->showNameModel}->{$this->functionNameRead}(\$item_id);
@@ -328,7 +336,7 @@ class Codeigniter3_contoller
         \$message_error = 'Registro não encontrado.';
         {$response_json} exit(response_json(array('error' => \$message_error)));
         {$response_set_flashdata} set_flash_message_danger('error', \$message_error);
-        {$response_set_flashdata} redirect(base_url('modelo'));  // todo: link redirect
+        {$response_set_flashdata} redirect(base_url());  // todo: link redirect
       }
   
       \$linha = \$this->{$this->showNameModel}->{$this->functionNameDelete}(\$item_id);
@@ -337,12 +345,12 @@ class Codeigniter3_contoller
         \$message_error = 'Não foi possivel remover o registro.';
         {$response_json} exit(response_json(array('error' => \$message_error)));
         {$response_set_flashdata} set_flash_message_danger('error', \$message_error);
-        {$response_set_flashdata} redirect(base_url('modelo'));  // todo: link redirect
+        {$response_set_flashdata} redirect(base_url());  // todo: link redirect
       } else {
         \$message_success = 'Não foi possivel remover o registro.';
         {$response_json} exit(response_json(array('success' => \$message_success)));
         {$response_set_flashdata} set_flash_message_success('success', \$message_success);
-        {$response_set_flashdata} redirect(base_url('modelo'));  // todo: link redirect
+        {$response_set_flashdata} redirect(base_url());  // todo: link redirect
       }
     }
     ";

@@ -5,9 +5,9 @@ class Codeigniter3_view
 
   public bool $validationClientSide;
 
-  public string $viewNameCreate;
-  public string $viewNameUpdate;
-  public string $viewNameRead;
+  public string $fileNameViewCreate;
+  public string $fileNameViewRead;
+  public string $fileNameViewUpdate;
 
   private string $dataCreate;
   private string $dataUpdate;
@@ -16,12 +16,12 @@ class Codeigniter3_view
   function __construct(array $config = array())
   {
     // File names
-    $this->viewNameCreate = (isset($config['viewNameCreate']) && !empty($config['viewNameCreate'])) ? $config['viewNameCreate'] : 'Create';
-    $this->viewNameUpdate = (isset($config['viewNameUpdate']) && !empty($config['viewNameUpdate'])) ? $config['viewNameUpdate'] : 'Update';
-    $this->viewNameRead = (isset($config['viewNameRead']) && !empty($config['viewNameRead'])) ? $config['viewNameRead'] : 'Read';
-    $this->viewNameCreate = ucfirst($this->viewNameCreate);
-    $this->viewNameUpdate = ucfirst($this->viewNameUpdate);
-    $this->viewNameRead = ucfirst($this->viewNameRead);
+    $this->fileNameViewCreate = (isset($config['fileNameViewCreate']) && !empty($config['fileNameViewCreate'])) ? $config['fileNameViewCreate'] : 'Create';
+    $this->fileNameViewRead = (isset($config['fileNameViewRead']) && !empty($config['fileNameViewRead'])) ? $config['fileNameViewRead'] : 'Update';
+    $this->fileNameViewUpdate = (isset($config['fileNameViewUpdate']) && !empty($config['fileNameViewUpdate'])) ? $config['fileNameViewUpdate'] : 'Read';
+    $this->fileNameViewCreate = ucfirst($this->fileNameViewCreate);
+    $this->fileNameViewRead = ucfirst($this->fileNameViewRead);
+    $this->fileNameViewUpdate = ucfirst($this->fileNameViewUpdate);
 
     // other
     $this->validationClientSide = (isset($config['validationClientSide']) && !empty($config['validationClientSide'])) ? TRUE : FALSE;
@@ -39,7 +39,7 @@ class Codeigniter3_view
   }
   private function createViewCreate(array $dataTable)
   {
-    $html = $this->htmlStart();
+    $html = $this->htmlStart($this->fileNameViewCreate);
     $html .= $this->htmlCreate($dataTable);
     $html .= $this->htmlEnd();
     // $html .= $this->validationClientSide($dataTable);
@@ -50,7 +50,7 @@ class Codeigniter3_view
   }
   private function createViewUpdate(array $dataTable)
   {
-    $html = $this->htmlStart();
+    $html = $this->htmlStart($this->fileNameViewUpdate);
     $html .= $this->htmlUpdate($dataTable);
     $html .= $this->htmlEnd();
     // $html .= $this->validationClientSide($dataTable);
@@ -61,7 +61,7 @@ class Codeigniter3_view
   }
   private function createViewRead(array $dataTable)
   {
-    $html = $this->htmlStart();
+    $html = $this->htmlStart($this->fileNameViewRead);
     $html .= $this->htmlTable($dataTable);
     $html .= $this->htmlEnd();
 
@@ -70,12 +70,16 @@ class Codeigniter3_view
   }
   private function join()
   {
-    return [$this->dataCreate, $this->dataUpdate, $this->dataRead];
+    return array(
+      array('fileData' => $this->dataCreate, 'fileName' => $this->fileNameViewCreate),
+      array('fileData' => $this->dataUpdate, 'fileName' => $this->fileNameViewUpdate),
+      array('fileData' => $this->dataRead, 'fileName' => $this->fileNameViewRead),
+    );
   }
 
-  private function htmlStart()
+  private function htmlStart(string $name_header)
   {
-    $html = '
+    $html = <<<EOT
     <div class="container-fluid">
       <div class="row justify-content-center">
         <div class="col-md-10">
@@ -86,7 +90,7 @@ class Codeigniter3_view
                   <div class="container-fluid">
                     <div class="row align-items-center">
                       <div class="col-md-6">
-                        <h2 class="text-md-left text-white">Header</h2>
+                        <h2 class="text-md-left text-white">{$name_header}</h2>
                       </div>
                       <div class="col-md-6">
                         <h5 class="text-md-right text-white">Detalhes 1</h5>
@@ -100,19 +104,22 @@ class Codeigniter3_view
             <div class="row justify-content-center">
               <div class="col-md-8">
                 <div class="body-view">
-        ';
+
+    EOT;
     return $html;
   }
   private function htmlEnd()
   {
-    $html = '
+    $html = <<<EOT
+
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>';
+    </div>
+    EOT;
     return $html;
   }
 
@@ -156,7 +163,6 @@ class Codeigniter3_view
     {$str_inputs_create}
     
     <?= form_close(); ?>
-
     EOT;
 
     return $html_create;
@@ -173,7 +179,6 @@ class Codeigniter3_view
     {$str_inputs_update}
     
     <?= form_close(); ?>
-
     EOT;
 
     return $html_update;

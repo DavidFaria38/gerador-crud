@@ -20,13 +20,13 @@ class Codeigniter3_model
   function __construct(array $config = array())
   {
     // Function names
-    $this->functionNameCreate = (isset($config['functionNameCreate']) && !empty($config['functionNameCreate'])) ? $config['functionNameCreate'] : 'insert';
-    $this->functionNameRead = (isset($config['functionNameRead']) && !empty($config['functionNameRead'])) ? $config['functionNameRead'] : 'read';
-    $this->functionNameUpdate = (isset($config['functionNameUpdate']) && !empty($config['functionNameUpdate'])) ? $config['functionNameUpdate'] : 'update';
-    $this->functionNameDelete = (isset($config['functionNameDelete']) && !empty($config['functionNameDelete'])) ? $config['functionNameDelete'] : 'delete';
-    $this->functionNameSufix = (isset($config['functionNameSufix']) && !empty($config['functionNameSufix'])) ? $config['functionNameSufix'] : 'save';
+    $this->functionNameCreate = (isset($config['functionNameCreate']) && !empty($config['functionNameCreate'])) ? strtolower($config['functionNameCreate']) : 'insert';
+    $this->functionNameRead = (isset($config['functionNameRead']) && !empty($config['functionNameRead'])) ? strtolower($config['functionNameRead']) : 'read';
+    $this->functionNameUpdate = (isset($config['functionNameUpdate']) && !empty($config['functionNameUpdate'])) ? strtolower($config['functionNameUpdate']) : 'update';
+    $this->functionNameDelete = (isset($config['functionNameDelete']) && !empty($config['functionNameDelete'])) ? strtolower($config['functionNameDelete']) : 'delete';
+    $this->functionNameSufix = (isset($config['functionNameSufix']) && !empty($config['functionNameSufix'])) ? strtolower($config['functionNameSufix']) : 'save';
     // File names
-    $this->fileNameModel = (isset($config['fileNameModel']) && !empty($config['fileNameModel'])) ? $config['fileNameModel'] : 'Generic_model';
+    $this->fileNameModel = (isset($config['fileNameModel']) && !empty($config['fileNameModel'])) ? ucfirst($config['fileNameModel']) : 'Generic_model';
     $this->showNameModel = strtolower($this->fileNameModel);
   }
 
@@ -138,7 +138,7 @@ class Codeigniter3_model
     return $str;
   }
 
-  private function strStartFunction() // todo: fazer gerar o nome do model correto
+  private function strStartFunction()
   {
     return "
     <?php
