@@ -3,7 +3,7 @@
 defined('DB_SERVERNAME') or define('DB_SERVERNAME', 'localhost');
 defined('DB_USERNAME') or define('DB_USERNAME', 'root');
 defined('DB_PASSWORD') or define('DB_PASSWORD', '');
-defined('DB_NAME') or define('DB_NAME', 'modelo');
+defined('DB_NAME') or define('DB_NAME', 'gerador_base');
 
 
 defined('FRAMEWORK_LIST') or define('FRAMEWORK_LIST', array(
