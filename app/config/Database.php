@@ -46,6 +46,33 @@ class Database
   function createDB()
   {
     // Create connection
+    $conn = new mysqli($this->servername, $this->username, $this->password);
+
+    // Check connection
+    if ($conn->connect_error) {
+      die("Connection with Database failed: " . $conn->connect_error);
+    }
+
+    
+    $nome_db = DB_NAME;
+    
+    $query = "
+    CREATE DATABASE {$nome_db};
+    ";
+
+    $result_mysql = $conn->query($query);
+
+    $result = $result_mysql;
+
+    $conn->close();
+    
+    
+    return $result;
+  }
+
+  function createTable()
+  {
+    // Create connection
     $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
 
     // Check connection
@@ -90,7 +117,8 @@ class Database
       {$tipoCampoHTML} varchar(200),
       {$TabelaRelacionada} varchar(200),
       {$TabelaRelacionada_CodigoCampo} varchar(200),
-      {$TabelaRelacionada_valorCampo} varchar(200)
+      {$TabelaRelacionada_valorCampo} varchar(200),
+      PRIMARY KEY ({$codigo})
     );
     ";
 
