@@ -4,7 +4,6 @@ class Codeigniter3_model
 {
 
   public string $fileNameModel;
-  public string $showNameModel;
 
   public string $functionNameCreate;
   public string $functionNameRead;
@@ -20,14 +19,13 @@ class Codeigniter3_model
   function __construct(array $config = array())
   {
     // Function names
-    $this->functionNameCreate = (isset($config['functionNameCreate']) && !empty($config['functionNameCreate'])) ? strtolower($config['functionNameCreate']) : 'insert';
-    $this->functionNameRead = (isset($config['functionNameRead']) && !empty($config['functionNameRead'])) ? strtolower($config['functionNameRead']) : 'read';
-    $this->functionNameUpdate = (isset($config['functionNameUpdate']) && !empty($config['functionNameUpdate'])) ? strtolower($config['functionNameUpdate']) : 'update';
-    $this->functionNameDelete = (isset($config['functionNameDelete']) && !empty($config['functionNameDelete'])) ? strtolower($config['functionNameDelete']) : 'delete';
-    $this->functionNameSufix = (isset($config['functionNameSufix']) && !empty($config['functionNameSufix'])) ? strtolower($config['functionNameSufix']) : 'save';
+    $this->functionNameCreate = $config['functionNameCreate'];
+    $this->functionNameRead = $config['functionNameRead'];
+    $this->functionNameUpdate = $config['functionNameUpdate'];
+    $this->functionNameDelete = $config['functionNameDelete'];
+    $this->functionNameSufix = $config['functionNameSufix'];
     // File names
-    $this->fileNameModel = (isset($config['fileNameModel']) && !empty($config['fileNameModel'])) ? ucfirst($config['fileNameModel']) : 'Generic_model';
-    $this->showNameModel = strtolower($this->fileNameModel);
+    $this->fileNameModel = $config['fileNameModel'];
   }
 
   public function run(array $dataTable)
@@ -57,7 +55,7 @@ class Codeigniter3_model
 
         \$db->insert('$table_name', \$data_insert); 
 
-        return \$db->inserted_id();
+        return \$db->insert_id();
     }
     ";
     // var_dump("<textarea> $str </textarea>");
@@ -65,15 +63,16 @@ class Codeigniter3_model
 
     return $str;
   }
-  private function createFunctionRead(array $dataTable) // todo: to be done
+  private function createFunctionRead(array $dataTable)
   {
     $table_name = $this->getTableName($dataTable);
     $str_join = $this->strJoinForeignData($dataTable);
+    $str_search_related_tables = $this->strSearchOtherTables($dataTable);
     $item_pk = $this->getRegistroPrimaryKey($dataTable);
     $field_pk = $item_pk[GERADOR_COL_NAMEFIELD_DB];
 
     $str = "
-    public function consulta(\$item_id = NULL)
+    public function {$this->functionNameRead}(\$item_id = NULL)
     {
       \$db = \$this->db;
   
@@ -82,12 +81,25 @@ class Codeigniter3_model
       {$str_join}
       if (\$item_id) \$db->where('{$field_pk}', \$item_id);
       
-      \$data = \$db->get->result();
+      \$data = \$db->get()->result();
   
       if (\$item_id && count(\$data) == 1) return \$data[0]; // retornar primeiro item se for pesquisa por id
       return \$data;
     }
     ";
+
+    if (!empty($str_search_related_tables)) {
+      $str .= "
+      public function {$this->functionNameRead}_from_related_tables()
+      {
+        \$arr_data = array();
+          \$db = \$this->db;
+          
+          {$str_search_related_tables}
+          return \$arr_data;
+      }
+      ";
+    }
     // var_dump("<textarea> $str </textarea>");
     // die;
 
@@ -201,6 +213,29 @@ class Codeigniter3_model
       // $foreign_field_value = $data_input[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE];
 
       $str_join .= "\$db->join('{$foreign_table_name}', '{$current_table_name}.{$current_field_name} = {$foreign_table_name}.{$foreign_primary_key_field_name}');\n";
+    }
+
+    return $str_join;
+  }
+  
+  private function strSearchOtherTables(array $dataTable)
+  {
+    $str_join = "";
+
+    $arr_table_foreign_data = array_filter($dataTable, function ($value) { // retornar registro que possuem tabela estrangeira
+      return !empty($value[GERADOR_COL_NAMETABLE_FOREIGN]);
+    }, ARRAY_FILTER_USE_BOTH);
+
+    // var_dump('<pre>', $arr_table_foreign_data); die;
+
+    foreach ($arr_table_foreign_data as $key => $data_input) { // Gerar joins com tabelas estrangeiras
+      $foreign_table_name = $data_input[GERADOR_COL_NAMETABLE_FOREIGN];
+
+      $str_join .= "
+      \$db->select('*');
+      \$db->from('{$foreign_table_name}');
+      \$data = \$db->get()->result();
+      \$arr_data['{$foreign_table_name}'] = \$data;\n";
     }
 
     return $str_join;
