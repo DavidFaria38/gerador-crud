@@ -4,6 +4,7 @@ require_once 'app/frameworks/interface/Interface_framework.php';
 require_once 'app/frameworks/codeigniter3/Codeigniter3_contoller.php';
 require_once 'app/frameworks/codeigniter3/Codeigniter3_model.php';
 require_once 'app/frameworks/codeigniter3/Codeigniter3_view.php';
+require_once 'app/frameworks/codeigniter3/Codeigniter3_routes.php';
 
 class Codeigniter3 implements Interface_framework
 {
@@ -12,6 +13,7 @@ class Codeigniter3 implements Interface_framework
   private string $dataController;
   private string $dataModel;
   private array $arrDataView;
+  private string $dataRoutes;
   private array $config;
 
   function __construct(array $config)
@@ -46,30 +48,33 @@ class Codeigniter3 implements Interface_framework
     $table_name = $dataTable[0][GERADOR_COL_NAMETABLE];
     $file_name = str_replace('T', '', $table_name);
     $file_name = ucfirst($file_name);
-    $this->config['fileNameController'] = $file_name;
-    $this->config['fileNameModel'] = $file_name;
+    $this->config['fileNameController'] = "{$file_name}_controller";
+    $this->config['fileNameModel'] = "{$file_name}_model";
     $this->config['directoryView'] = strtolower($file_name);
 
 
     $controller = new Codeigniter3_contoller($this->config);
     $model = new Codeigniter3_model($this->config);
     $view = new Codeigniter3_view($this->config);
+    $routes = new Codeigniter3_routes($this->config);
 
     $this->dataController = $controller->run($dataTable);
     $this->dataModel = $model->run($dataTable);
     $this->arrDataView = $view->run($dataTable);
+    $this->dataRoutes = $routes->run();
 
     $this->makeFiles();
   }
+  
   public function makeFiles()
   {
     // definindo diretorios dos arquivos
     $dir_dump = "./dump";
     $dir_framework = $dir_dump . "/" . $this->frameworkName;
     $dir_crud = $dir_framework . '/' . $this->config['directoryName'];
-    $dir_controller = $dir_crud . "/controller/";
-    $dir_model = $dir_crud . "/model/";
-    $dir_view = $dir_crud . "/view/";
+    $dir_controller = $dir_crud . "/controllers/";
+    $dir_model = $dir_crud . "/models/";
+    $dir_view = $dir_crud . "/views/";
     $dir_view_item = $dir_view . $this->config['directoryView'] . "/";
 
     // criando diretorios para arquivos
@@ -97,6 +102,11 @@ class Codeigniter3 implements Interface_framework
       fwrite($file_view, $dataView['fileData']);
       fclose($file_view);
     }
+    
+    // criar arquivo model
+    $file_routes = fopen($dir_crud . '/routes.txt', 'a');
+    fwrite($file_routes, $this->dataRoutes);
+    fclose($file_routes);
 
     var_dump("makefile end;");
 
