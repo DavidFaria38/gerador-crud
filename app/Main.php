@@ -6,70 +6,6 @@ require_once 'app/GetDataTable.php';
 
 class Main
 {
-  private $dataTableTest = array(
-    array(
-      'gerbas_codigo' => '1',
-      'gerbas_nomeTabelaDB' => 'Tmatricula',
-      'gerbas_CampoNomeDB' => 'mat_codigo',
-      'gerbas_campoLabelHTML' => 'codigo',
-      'gerbas_campoPrimaryKey' => TRUE,
-      'gerbas_campoRequired' => TRUE,
-      'gerbas_campoHidden' => TRUE,
-      'gerbas_ordemCampo' => 1,
-      'gerbas_tamanhoMin' => 0,
-      'gerbas_tamanhoMax' => 20,
-      'gerbas_tipoConsistencia' => 'int',
-      'gerbas_tipoMascara' => '',
-      'gerbas_tipoCampoHTML' => 'hidden',
-      'gerbas_TabelaRelacionada' => '',
-      'gerbas_TabelaRelacionada_CodigoCampo' => '',
-      'gerbas_TabelaRelacionada_descricaoCampo' => '',
-      'gerbas_TabelaRelacionada_NomeCampoParaHTML' => '',
-    ),
-    array(
-      'gerbas_codigo' => '2',
-      'gerbas_nomeTabelaDB' => 'Tmatricula',
-      'gerbas_CampoNomeDB' => 'mat_aluno_nome',
-      'gerbas_campoLabelHTML' => 'nome aluno',
-      'gerbas_campoPrimaryKey' => FALSE,
-      'gerbas_campoRequired' => TRUE,
-      'gerbas_campoHidden' => FALSE,
-      'gerbas_ordemCampo' => 2,
-      'gerbas_tamanhoMin' => 0,
-      'gerbas_tamanhoMax' => 80,
-      'gerbas_tipoConsistencia' => '',
-      'gerbas_tipoMascara' => '',
-      'gerbas_tipoCampoHTML' => 'text',
-      'gerbas_TabelaRelacionada' => '',
-      'gerbas_TabelaRelacionada_CodigoCampo' => '',
-      'gerbas_TabelaRelacionada_descricaoCampo' => '',
-      'gerbas_TabelaRelacionada_NomeCampoParaHTML' => '',
-    ),
-    array(
-      'gerbas_codigo' => '3',
-      'gerbas_nomeTabelaDB' => 'Tmatricula',
-      'gerbas_CampoNomeDB' => 'mat_turma',
-      'gerbas_campoLabelHTML' => 'turma',
-      'gerbas_campoPrimaryKey' => FALSE,
-      'gerbas_campoRequired' => TRUE,
-      'gerbas_campoHidden' => FALSE,
-      'gerbas_ordemCampo' => 3,
-      'gerbas_tamanhoMin' => 0,
-      'gerbas_tamanhoMax' => 0,
-      'gerbas_tipoConsistencia' => '',
-      'gerbas_tipoMascara' => '',
-      'gerbas_tipoCampoHTML' => 'select',
-      // 'gerbas_TabelaRelacionada' => '',
-      // 'gerbas_TabelaRelacionada_CodigoCampo' => '',
-      // 'gerbas_TabelaRelacionada_descricaoCampo' => '',
-      // 'gerbas_TabelaRelacionada_NomeCampoParaHTML' => '',
-      'gerbas_TabelaRelacionada' => 'Tturma',
-      'gerbas_TabelaRelacionada_CodigoCampo' => 'tur_Codigo',
-      'gerbas_TabelaRelacionada_descricaoCampo' => 'turma',
-      'gerbas_TabelaRelacionada_NomeCampoParaHTML' => 'turma',
-    ),
-  );
-
   function __construct()
 
   {
@@ -90,7 +26,7 @@ class Main
       'fileNameViewRead' => 'consultar', // na view, nome header e titulo do arquivo
       'fileNameViewUpdate' => 'alterar', // na view, nome header e titulo do arquivo
       'validationServerSide' => TRUE, // no controller, há validação dos inputs
-      'validationClientSide' => NULL, // não implementado aidna
+      'validationClientSide' => TRUE, // não implementado aidna
       'functionNameCreate' => 'inserir', // no controller e model, define nome da função
       'functionNameRead' => 'consultar', // no controller e model, define nome da função
       'functionNameUpdate' => 'alterar', // no controller e model, define nome da função
@@ -110,7 +46,14 @@ class Main
     $arr_data_tables = $getDataTable->getDataTable();
 
     foreach ($arr_data_tables as $key => $arr_data_table) {
-      $framework->createFromTable($arr_data_tables);
+      $framework->createFromTable($arr_data_table);
     }
+  }
+
+  function makeDB(){
+    $db = new Database();
+
+    var_dump($db->createDB());
+    $db->createTable();
   }
 }
