@@ -26,9 +26,6 @@ class Codeigniter3 implements Interface_framework
       'fileNameViewRead' => $config['fileNameViewRead'],
       'fileNameViewUpdate' => $config['fileNameViewUpdate'],
       
-      'validationServerSide' => $config['validationServerSide'],
-      'validationClientSide' => $config['validationClientSide'],
-      
       'functionNameCreate' => $config['functionNameCreate'],
       'functionNameRead' => $config['functionNameRead'],
       'functionNameUpdate' => $config['functionNameUpdate'],
@@ -65,7 +62,7 @@ class Codeigniter3 implements Interface_framework
 
     $this->makeFiles();
   }
-  
+
   public function makeFiles()
   {
     // definindo diretorios dos arquivos

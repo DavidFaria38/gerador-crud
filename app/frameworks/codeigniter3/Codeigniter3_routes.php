@@ -2,7 +2,6 @@
 
 class Codeigniter3_routes
 {
-  public bool $validationServerSide;
   public bool $functionDeleteResponseJson;
 
   public string $fileNameController;
@@ -38,7 +37,6 @@ class Codeigniter3_routes
     $this->fileNameViewUpdate = $config['fileNameViewUpdate'];
     $this->dirView = $config['directoryView'];
     // other
-    $this->validationServerSide = $config['validationServerSide'];
     $this->functionDeleteResponseJson = $config['functionDeleteResponseJson'];
   }
 

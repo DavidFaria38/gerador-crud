@@ -117,13 +117,19 @@ class Codeigniter3_contoller
   }
 
   /* Funções auxiliares */
-  private function strPhpValidation(array $dataTable)
+  private function strPhpValidation(array $dataTable, bool $validationUpdate = FALSE)
   {
-
-    // retorna os registros que não possuem campo hidden 
-    $arr_table_data_selected = array_filter($dataTable, function ($value) {
-      return !$value[GERADOR_COL_HIDDEN];
-    }, ARRAY_FILTER_USE_BOTH);
+    if ($validationUpdate) {
+      // retorna os registros que são chave primaria ou não possuem campo hidden 
+      $arr_table_data_selected = array_filter($dataTable, function ($value) {
+        return $value[GERADOR_COL_PK] || !$value[GERADOR_COL_HIDDEN];
+      }, ARRAY_FILTER_USE_BOTH);
+    } else {
+      // retorna os registros que não possuem campo hidden 
+      $arr_table_data_selected = array_filter($dataTable, function ($value) {
+        return !$value[GERADOR_COL_HIDDEN];
+      }, ARRAY_FILTER_USE_BOTH);
+    }
 
     $strDataPhpValidation = "";
 
@@ -133,8 +139,8 @@ class Codeigniter3_contoller
       $nomeCampoHTML = $dataInput[GERADOR_COL_NAMEFIELD_HTML];
       $inputRequired = ($dataInput[GERADOR_COL_REQUIRED]) ? '|required' : '';
       $inputEmail = ($dataInput[GERADOR_COL_TYPE_VALIDATION] == TYPE_EMAIL) ? '|valid_email' : '';
-      $inputMinLength = (!empty($dataInput[GERADOR_COL_MIN_LENGTH])) ? "|min_length[{$dataInput[GERADOR_COL_MIN_LENGTH]}]" : '';
-      $inputMaxLength = (!empty($dataInput[GERADOR_COL_MAX_LENGTH])) ? "|max_length[{$dataInput[GERADOR_COL_MAX_LENGTH]}]" : '';
+      $inputMinLength = (!empty($dataInput[GERADOR_COL_MIN_LENGTH]) && $dataInput[GERADOR_COL_MIN_LENGTH] != -1) ? "|min_length[{$dataInput[GERADOR_COL_MIN_LENGTH]}]" : '';
+      $inputMaxLength = (!empty($dataInput[GERADOR_COL_MAX_LENGTH]) && $dataInput[GERADOR_COL_MAX_LENGTH] != -1) ? "|max_length[{$dataInput[GERADOR_COL_MAX_LENGTH]}]" : '';
 
       $strDataPhpValidation .= "\$this->form_validation->set_rules('{$nomeCampoDB}', '{$nomeCampoHTML}', 'trim{$inputRequired}{$inputEmail}{$inputMinLength}{$inputMaxLength}');";
       $strDataPhpValidation .= "\n";
@@ -142,13 +148,19 @@ class Codeigniter3_contoller
     return $strDataPhpValidation;
   }
 
-  private function strPhpArray(array $dataTable, string $arrayFrom = '$data')
+  private function strPhpArray(array $dataTable, string $arrayFrom = '$data', bool $validationUpdate = FALSE)
   {
-    // retorna os registros que não possuem campo hidden 
-    $arr_table_data_selected = array_filter($dataTable, function ($value) {
-      return !$value[GERADOR_COL_HIDDEN];
-    }, ARRAY_FILTER_USE_BOTH);
-
+    if ($validationUpdate) {
+      // retorna os registros que são chave primaria ou não possuem campo hidden 
+      $arr_table_data_selected = array_filter($dataTable, function ($value) {
+        return $value[GERADOR_COL_PK] || !$value[GERADOR_COL_HIDDEN];
+      }, ARRAY_FILTER_USE_BOTH);
+    } else {
+      // retorna os registros que não possuem campo hidden 
+      $arr_table_data_selected = array_filter($dataTable, function ($value) {
+        return !$value[GERADOR_COL_HIDDEN];
+      }, ARRAY_FILTER_USE_BOTH);
+    }
     $str = "array(";
 
     foreach ($arr_table_data_selected as $key => $dataInput) {
@@ -208,10 +220,10 @@ class Codeigniter3_contoller
       $str = "
       public function {$this->functionNameCreate}()
       {
-        \$data = \$this->{$this->showName}->{$this->functionNameRead}_from_related_tables();
+        \$data_related_tables = \$this->{$this->showName}->{$this->functionNameRead}_from_related_tables();
         
         \$data_view = array(
-          'data' => \$data
+          'data_related_tables' => \$data_related_tables,
         );
 
         render_template('{$this->dirView}/{$this->fileNameViewCreate}', \$data_view);
@@ -230,8 +242,8 @@ class Codeigniter3_contoller
   }
   private function strInserir_salvar(array $dataTable)
   {
-    $strDataPhpValidation = $this->strPhpValidation($dataTable);
-    $strDataArray = $this->strPhpArray($dataTable, '$data_post');
+    $strDataPhpValidation = $this->strPhpValidation($dataTable, FALSE);
+    $strDataArray = $this->strPhpArray($dataTable, '$data_post', FALSE);
 
     $str = "
     public function {$this->functionNameCreate}_{$this->functionNameSufix}(\$item_id = 0)
@@ -284,39 +296,72 @@ class Codeigniter3_contoller
   }
 
   /* Funções para createFunctionUpdate() */
-  private function strAlterar()
+  private function strAlterar(array $dataTable)
   {
-    $str = "
-    public function {$this->functionNameUpdate}(\$item_id = 0)
-    {
-      // \$usr_codigo = session_codigo_usr();
+    $str_search_related_tables = $this->strSearchOtherTables($dataTable);
 
-      if (empty(\$item_id)) {
-        set_flash_message_danger('error', 'Item não encontrado.');
-        redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+    if (!empty($str_search_related_tables)) {
+      $str = "
+      public function {$this->functionNameUpdate}(\$item_id = 0)
+      {
+        // \$usr_codigo = session_codigo_usr();
+
+        if (empty(\$item_id)) {
+          set_flash_message_danger('error', 'Item não encontrado.');
+          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+        }
+
+        \$dados_item = \$this->{$this->showName}->{$this->functionNameRead}(\$item_id);
+
+        if (empty(\$dados_item)) {
+          set_flash_message_danger('error', 'Registro não encontrado.');
+          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+        }
+
+        \$data_related_tables = \$this->matricula->consultar_from_related_tables();
+
+        \$data_view = array(
+          'data' => \$dados_item,
+          'data_related_tables' => \$data_related_tables,
+          'item_id' => \$item_id
+        );
+
+        render_template('{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
       }
+      ";
+    } else {
+      $str = "
+      public function {$this->functionNameUpdate}(\$item_id = 0)
+      {
+        // \$usr_codigo = session_codigo_usr();
 
-      \$dados_item = \$this->{$this->showName}->{$this->functionNameRead}(\$item_id);
+        if (empty(\$item_id)) {
+          set_flash_message_danger('error', 'Item não encontrado.');
+          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+        }
 
-      if (empty(\$dados_item)) {
-        set_flash_message_danger('error', 'Registro não encontrado.');
-        redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+        \$dados_item = \$this->{$this->showName}->{$this->functionNameRead}(\$item_id);
+
+        if (empty(\$dados_item)) {
+          set_flash_message_danger('error', 'Registro não encontrado.');
+          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+        }
+
+        \$data_view = array(
+          'data' => \$dados_item,
+          'item_id' => \$item_id
+        );
+
+        render_template('{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
       }
-
-      \$data_view = array(
-        'data' => \$dados_item
-      );
-
-      render_template('{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
+      ";
     }
-    ";
-
     return $str;
   }
   private function strAlterar_salvar(array $dataTable)
   {
-    $strDataPhpValidation = $this->strPhpValidation($dataTable);
-    $strDataArray = $this->strPhpArray($dataTable, '$data_post');
+    $strDataPhpValidation = $this->strPhpValidation($dataTable, TRUE);
+    $strDataArray = $this->strPhpArray($dataTable, '$data_post', TRUE);
 
     $str = "
     public function {$this->functionNameUpdate}_{$this->functionNameSufix}(\$item_id = 0)
@@ -336,8 +381,8 @@ class Codeigniter3_contoller
         \$linha = \$this->{$this->showName}->{$this->functionNameUpdate}(\$data_insert);
 
         if (empty(\$linha)) {
-          set_flash_message_danger('error', 'Não foi possivel inserir o registro, tente novamente.');
-          redirect(base_url('{$this->showName}/{$this->functionNameUpdate}'));
+          set_flash_message_danger('error', 'Não foi possivel alterar o registro, tente novamente.');
+          redirect(base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$item_id));
         } else {
           set_flash_message_success('success', 'Registro alterado com sucesso!');
           redirect(base_url('{$this->showName}/{$this->functionNameRead}'));

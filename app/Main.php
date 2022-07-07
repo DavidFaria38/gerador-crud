@@ -25,8 +25,6 @@ class Main
       'fileNameViewCreate' => 'inserir', // na view, nome header e titulo do arquivo
       'fileNameViewRead' => 'consultar', // na view, nome header e titulo do arquivo
       'fileNameViewUpdate' => 'alterar', // na view, nome header e titulo do arquivo
-      'validationServerSide' => TRUE, // no controller, há validação dos inputs
-      'validationClientSide' => TRUE, // não implementado aidna
       'functionNameCreate' => 'inserir', // no controller e model, define nome da função
       'functionNameRead' => 'consultar', // no controller e model, define nome da função
       'functionNameUpdate' => 'alterar', // no controller e model, define nome da função

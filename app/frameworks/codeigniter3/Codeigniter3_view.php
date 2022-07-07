@@ -98,10 +98,12 @@ class Codeigniter3_view
                     <div class="col-md-6">
                       <h2 class="text-md-left text-white">{$name_header}</h2>
                     </div>
-                    <div class="col-md-6">
-                      <h5 class="text-md-right text-white">Detalhes 1</h5>
-                      <h5 class="text-md-right text-white">Detalhes 2</h5>
-                    </div>
+                    <!--
+                      <div class="col-md-6">
+                        <h5 class="text-md-right text-white">Detalhes 1</h5>
+                        <h5 class="text-md-right text-white">Detalhes 2</h5>
+                      </div>
+                    -->
                   </div>
                 </div>
               </div>
@@ -207,7 +209,7 @@ class Codeigniter3_view
     <?= get_flash_message('error'); ?>
     <?= form_validation_errors(); ?>
 
-    <?= form_open(base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$data->{$field_pk})); ?>
+    <?= form_open(base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$item_id)); ?>
 
     {$str_inputs_update}
     
@@ -223,9 +225,9 @@ class Codeigniter3_view
 
   private function validationClientSide(array $dataTable)
   {
-    // retorna os registros que são chave primaria ou não possuem campo hidden 
+    // retorna os registros que não possuem campo hidden 
     $arr_table_data_selected = array_filter($dataTable, function ($value) {
-      return $value[GERADOR_COL_PK] || !$value[GERADOR_COL_HIDDEN];
+      return !$value[GERADOR_COL_HIDDEN];
     }, ARRAY_FILTER_USE_BOTH);
 
     $rules = "";
@@ -345,12 +347,14 @@ class Codeigniter3_view
       $class_mask = $table_input[GERADOR_COL_TYPE_VALIDATION];
 
       $input_config = array(
+        'create' => FALSE,
+        'update' => TRUE,
         'label' => $table_input[GERADOR_COL_NAMEFIELD_HTML],
         'type' => $table_input[GERADOR_COL_TYPEFIELD_HTML],
         'id' => $table_input[GERADOR_COL_NAMEFIELD_DB],
         'name' => $table_input[GERADOR_COL_NAMEFIELD_DB],
         'class' => $class_mask,
-        'value' => $table_input[GERADOR_COL_NAMEFIELD_DB],
+        'value' => (!empty($table_input[GERADOR_COL_NAMETABLE_FOREIGN])) ? $table_input[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE] : $table_input[GERADOR_COL_NAMEFIELD_DB],
         'placeholder' => ' ',
         'required' => $table_input[GERADOR_COL_REQUIRED],
         'disabled' => '',
@@ -397,12 +401,17 @@ class Codeigniter3_view
       $field_foreign_key = $table_input[GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE];
       $field_foreign_value = $table_input[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE];
 
+      $update_select = "";
+      if(isset($input_config['update']) && !empty($input_config['update'])){
+        $update_select = " <?= (\$option->{$field_foreign_key} == \$data->{$id}) ? 'selected' : '' ?>";
+      }
+
       $input = <<< EOT
       <div class="form-floating">
         <select class="form-select {$class_input}" name="{$name}" id="{$id}"{$required}{$disabled}{$readonly}>
           <option disabled selected>Selecione</option>
-          <?php foreach (\$data['{$table_data_key}'] as \$key => \$option) : ?>
-            <option value="<?= \$option->{$field_foreign_key} ?>"><?= \$option->{$field_foreign_value} ?></option>
+          <?php foreach (\$data_related_tables['{$table_data_key}'] as \$key => \$option) : ?>
+            <option value="<?= \$option->{$field_foreign_key} ?>"{$update_select}><?= \$option->{$field_foreign_value} ?></option>
           <?php endforeach; ?>
         </select>
         <label for="{$id}" class="{$class_label}">{$label}</label>
