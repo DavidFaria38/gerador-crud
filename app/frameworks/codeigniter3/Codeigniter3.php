@@ -43,10 +43,12 @@ class Codeigniter3 implements Interface_framework
   {
     // configuração de nomes de arquivos por nome de tabela
     $table_name = $dataTable[0][GERADOR_COL_NAMETABLE];
-    $file_name = str_replace('T', '', $table_name);
+    $file_name = ucfirst(strtolower($table_name));
+    $file_name = str_replace('T', '', $file_name);
     $file_name = ucfirst($file_name);
     $this->config['fileNameController'] = "{$file_name}_controller";
     $this->config['fileNameModel'] = "{$file_name}_model";
+    $this->config['fileNameShow'] = $file_name;
     $this->config['directoryView'] = strtolower($file_name);
 
 
@@ -60,13 +62,16 @@ class Codeigniter3 implements Interface_framework
     $this->arrDataView = $view->run($dataTable);
     $this->dataRoutes = $routes->run();
 
-    $this->makeFiles();
+    return $this->makeFiles();
   }
 
   public function makeFiles()
   {
+    $path = str_replace('app\frameworks\codeigniter3', '', __DIR__);
+
     // definindo diretorios dos arquivos
-    $dir_dump = "./dump";
+    chdir($path);
+    $dir_dump = $path . "dump";
     $dir_framework = $dir_dump . "/" . $this->frameworkName;
     $dir_crud = $dir_framework . '/' . $this->config['directoryName'];
     $dir_controller = $dir_crud . "/controllers/";
@@ -105,7 +110,7 @@ class Codeigniter3 implements Interface_framework
     fwrite($file_routes, $this->dataRoutes);
     fclose($file_routes);
 
-    var_dump("makefile end;");
+    return dirname($dir_crud);
 
   }
 }

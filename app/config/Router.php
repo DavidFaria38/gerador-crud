@@ -30,7 +30,8 @@ class Router
    */
   private function formatRoute($route)
   {
-    $result = rtrim($route, '/');
+    $result = explode('?', $route)[0];
+    $result = rtrim($result, '/');
     $result = str_replace(BASEURL, '', $result);
     if ($result === '') {
       return '/';

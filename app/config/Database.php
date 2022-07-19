@@ -34,8 +34,8 @@ class Database
         array_push($arr_result, $row);
       }
     } else {
-      var_dump('Nenhum dado encontrado:<br><pre>', $conn->error_list ,'</pre>');
-      var_dump('<br><pre>', $result_mysql ,'</pre>');
+      // var_dump('Nenhum dado encontrado:<br><pre>', $conn->error_list ,'</pre>');
+      // var_dump('<br><pre>', $result_mysql ,'</pre>');
     }
 
     $conn->close();

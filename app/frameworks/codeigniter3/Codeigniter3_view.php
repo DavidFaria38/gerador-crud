@@ -2,6 +2,8 @@
 
 class Codeigniter3_view
 {
+  public bool $defaultInputStyle;
+
   public string $fileNameViewCreate;
   public string $fileNameViewRead;
   public string $fileNameViewUpdate;
@@ -20,6 +22,7 @@ class Codeigniter3_view
   function __construct(array $config = array())
   {
     // File names
+    $this->defaultInputStyle = TRUE;
     // Function names
     $this->fileNameViewCreate = $config['fileNameViewCreate'];
     $this->fileNameViewRead = $config['fileNameViewRead'];
@@ -29,8 +32,7 @@ class Codeigniter3_view
     $this->functionNameUpdate = $config['functionNameUpdate'];
     $this->functionNameDelete = $config['functionNameDelete'];
     $this->functionNameSufix = $config['functionNameSufix'];
-    $this->showName = ucfirst($config['fileNameController']);
-    $this->showName = strtolower(explode('_', $this->showName)[0]);
+    $this->showName = strtolower($config['fileNameShow']);
     // other
     // $this->functionDeleteResponseJson = (isset($config['functionDeleteResponseJson']) && $config['functionDeleteResponseJson']) ? TRUE : FALSE;
   }
@@ -89,10 +91,10 @@ class Codeigniter3_view
     $html = <<<EOT
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <div class="width-view">
+        <div class="ger-width-view">
           <div class="row">
             <div class="col-md-12">
-              <div class="header-view">
+              <div class="ger-header-view">
                 <div class="container-fluid">
                   <div class="row align-items-center">
                     <div class="col-md-6">
@@ -111,7 +113,7 @@ class Codeigniter3_view
           </div>
           <div class="row justify-content-center">
             <div class="col-md-{$size_body_view}">
-              <div class="body-view">
+              <div class="ger-body-view">
 
     EOT;
     return $html;
@@ -148,7 +150,7 @@ class Codeigniter3_view
       </div>
     </div>
 
-    <div class="overflow">
+    <div class="ger-overflow">
       <table class="datatable display cell-border">
         <thead>
           <tr>
@@ -181,12 +183,12 @@ class Codeigniter3_view
     <?= get_flash_message('error'); ?>
     <?= form_validation_errors(); ?>
 
-    <?= form_open(base_url('{$this->showName}/{$this->functionNameCreate}')); ?>
+    <?= form_open(base_url('{$this->showName}/{$this->functionNameCreate}'), ['class' => 'form_validate']); ?>
 
     {$str_inputs_create}
     
     <div class="d-flex justify-content-center pt-3">
-      <button type="submit" class="btn btn-primary btn-submit">Salvar</button>
+      <button type="button" class="btn btn-primary btn-validate">Salvar</button>
     </div>
 
     <?= form_close(); ?>
@@ -199,22 +201,18 @@ class Codeigniter3_view
   {
     $str_inputs_update = $this->strGetInputUpdate($dataTable);
 
-    $item_pk = $this->getRegistroPrimaryKey($dataTable);
-    $field_pk = $item_pk[GERADOR_COL_NAMEFIELD_DB];
-
-
     $html_update = <<<EOT
 
     <?= get_flash_message('success'); ?>
     <?= get_flash_message('error'); ?>
     <?= form_validation_errors(); ?>
 
-    <?= form_open(base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$item_id)); ?>
+    <?= form_open(base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$item_id), ['class' => 'form_validate']); ?>
 
     {$str_inputs_update}
     
     <div class="d-flex justify-content-center pt-3">
-    <button type="submit" class="btn btn-primary btn-submit">Salvar</button>
+      <button type="button" class="btn btn-primary btn-validate">Salvar</button>
     </div>
     
     <?= form_close(); ?>
@@ -248,10 +246,13 @@ class Codeigniter3_view
       $max_length = ($attribute_minMax_type == 'length' && $max != -1) ? "maxlength: {$max}," : "";
 
       $required = ($table_input[GERADOR_COL_REQUIRED]) ? 'required: true,' : 'required: false,';
-      $validation = (isset(HTML_INPUT_TYPE_LIST[$table_input[GERADOR_COL_TYPE_VALIDATION]])) ? HTML_INPUT_TYPE_LIST[$table_input[GERADOR_COL_TYPE_VALIDATION]]['name'] . ': true,' : '';
+      $validation = (!empty($table_input[GERADOR_COL_TYPE_VALIDATION])) ? $table_input[GERADOR_COL_TYPE_VALIDATION] . ': true,' : '';
 
+      if ($table_input[GERADOR_COL_TYPE_VALIDATION] != 'cpf' && $table_input[GERADOR_COL_TYPE_VALIDATION] != 'cnpj') {
+        $validation = '';
+      }
       $rules .= <<<EOT
-          \n{$field_name}: {{$required}{$validation}{$min_value}{$max_value}{$min_length}{$max_length}},
+        \n{$field_name}: {{$required}{$validation}{$min_value}{$max_value}{$min_length}{$max_length}},
         EOT;
     }
 
@@ -259,7 +260,7 @@ class Codeigniter3_view
     \n
     <script>
       $(function() {
-        $('form').validate({
+        $('.form_validate').validate({
           rules: {{$rules}}
         });
       });
@@ -294,7 +295,8 @@ class Codeigniter3_view
       // $max_length = ($attribute_minMax_type == 'length' && $max != -1) ? $max : '';
 
       // classe para aplicar a mascara do input
-      $class_mask = $table_input[GERADOR_COL_TYPE_VALIDATION];
+      // $class_mask = $table_input[GERADOR_COL_TYPE_VALIDATION];
+      $class_mask = $table_input[GERADOR_COL_TYPE_MASK];
 
       $input_config = array(
         'label' => $table_input[GERADOR_COL_NAMEFIELD_HTML],
@@ -314,7 +316,11 @@ class Codeigniter3_view
       );
       // var_dump('<pre>', $input_config); die;
 
-      $html_inputs .= $this->strMakeInput($input_config, $table_input);
+      if ($this->defaultInputStyle) {
+        $html_inputs .= $this->strMakeInput_default($input_config, $table_input);
+      } else {
+        $html_inputs .= $this->strMakeInput($input_config, $table_input);
+      }
     }
     // var_dump("<textarea cols=\"200\" rows=\"200\">{$html_inputs}</textarea>"); die;
     return $html_inputs;
@@ -344,7 +350,8 @@ class Codeigniter3_view
       // $max_length = ($attribute_minMax_type == 'length' && $max != -1) ? $max : '';
 
       // classe para aplicar a mascara do input
-      $class_mask = $table_input[GERADOR_COL_TYPE_VALIDATION];
+      // $class_mask = $table_input[GERADOR_COL_TYPE_VALIDATION];
+      $class_mask = $table_input[GERADOR_COL_TYPE_MASK];
 
       $input_config = array(
         'create' => FALSE,
@@ -366,7 +373,12 @@ class Codeigniter3_view
       );
       // var_dump('<pre>', $input_config); die;
 
-      $html_inputs .= $this->strMakeInput($input_config, $table_input);
+
+      if ($this->defaultInputStyle) {
+        $html_inputs .= $this->strMakeInput_default($input_config, $table_input);
+      } else {
+        $html_inputs .= $this->strMakeInput($input_config, $table_input);
+      }
     }
     // var_dump("<textarea cols=\"200\" rows=\"200\">{$html_inputs}</textarea>"); die;
     return $html_inputs;
@@ -402,7 +414,7 @@ class Codeigniter3_view
       $field_foreign_value = $table_input[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE];
 
       $update_select = "";
-      if(isset($input_config['update']) && !empty($input_config['update'])){
+      if (isset($input_config['update']) && !empty($input_config['update'])) {
         $update_select = " <?= (\$option->{$field_foreign_key} == \$data->{$id}) ? 'selected' : '' ?>";
       }
 
@@ -459,6 +471,98 @@ class Codeigniter3_view
     return $input;
   }
 
+  private function strMakeInput_default(array $input_config, array $table_input)
+  {
+
+    $label = $input_config['label'];
+    $type = $input_config['type'];
+    $id = $input_config['id'];
+    $name = $input_config['name'];
+    $class_input = (isset($input_config['class']) && !empty($input_config['class'])) ? $input_config['class'] : '';
+    $class_label = "form-label";
+    $value = (isset($input_config['value']) && !empty($input_config['value'])) ? $input_config['value'] : '';
+    $defaultValue = (!empty(trim($table_input[GERADOR_COL_DEFAULT_VALUE]))) ? trim($table_input[GERADOR_COL_DEFAULT_VALUE]) : "''";
+    $class_function_validate = " <?= form_validation_input('{$id}') ?>";
+
+    $required = (isset($input_config['required']) && !empty($input_config['required'])) ? " required" : '';
+    $disabled = (isset($input_config['disabled']) && !empty($input_config['disabled'])) ? " disabled" : '';
+    $readonly = (isset($input_config['readonly']) && !empty($input_config['readonly'])) ? " readonly" : '';
+
+    $placeholder = (isset($input_config['placeholder']) && !empty($input_config['placeholder'])) ? " placeholder=\"{$input_config['placeholder']}\"" : '';
+    $minValue = (isset($input_config['minValue']) && !empty($input_config['minValue'])) ? " min=\"{$input_config['minValue']}\"" : '';
+    $maxValue = (isset($input_config['maxValue']) && !empty($input_config['maxValue'])) ? " max=\"{$input_config['maxValue']}\"" : '';
+    $minLength = (isset($input_config['minLength']) && !empty($input_config['minLength'])) ? " minLength=\"{$input_config['minLength']}\"" : '';
+    $maxLength = (isset($input_config['maxLength']) && !empty($input_config['maxLength'])) ? " maxLength=\"{$input_config['maxLength']}\"" : '';
+
+
+    if ($type == 'select') {
+
+      $table_data_key = $table_input[GERADOR_COL_NAMETABLE_FOREIGN];
+      $field_foreign_key = $table_input[GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE];
+      $field_foreign_value = $table_input[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE];
+
+      $update_select = "";
+      if (isset($input_config['update']) && !empty($input_config['update'])) {
+        $update_select = " <?= (\$option->{$field_foreign_key} == \$data->{$id}) ? 'selected' : '' ?>";
+      }
+
+      $input = <<< EOT
+      <div class="form-group">
+        <label for="{$id}" class="{$class_label}">{$label}</label>
+        <select class="form-select {$class_input}" name="{$name}" id="{$id}"{$required}{$disabled}{$readonly}>
+          <option disabled selected>Selecione</option>
+          <?php foreach (\$data_related_tables['{$table_data_key}'] as \$key => \$option) : ?>
+            <option value="<?= \$option->{$field_foreign_key} ?>"{$update_select}><?= \$option->{$field_foreign_value} ?></option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      EOT;
+    } else if ($type == 'textarea') {
+
+      $value = (!empty($value)) ? "<?= \$data->{$input_config['value']} ?>" : "";
+
+      $input = <<< EOT
+      <div class="form-group">
+        <label for="{$id}" class="{$class_label}">{$label}</label>
+        <textarea type="textarea" class="form-control {$class_input}{$class_function_validate}" name="{$name}" id="{$id}"{$placeholder}{$minLength}{$maxLength}{$disabled}{$readonly}{$required}>{$value}</textarea>
+      </div>\n
+      EOT;
+    } else {
+
+      $value = (isset($input_config['value']) && !empty($input_config['value'])) ? " value=\"<?= (form_error('{$input_config['value']}')) ? set_value('{$input_config['value']}') : \$data->{$input_config['value']} ?>\"" : " value=\"<?= (form_error('{$id}')) ? set_value('{$id}') : {$defaultValue} ?>\"";
+
+      // seleção do tipo de classe a ser inserido
+      if ($type == 'checkbox' || $type == 'radio') {
+        $class_input = "form-check-input";
+        $class_label = "form-check-label";
+        $defaultValue = ($defaultValue == "''") ? 'FALSE' : 'TRUE';
+        $value = (isset($input_config['value']) && !empty($input_config['value'])) ? " <?= set_checkbox('{$input_config['value']}', \$data->{$input_config['value']}, (\$data->{$input_config['value']} == 1)) ?>" : " <?= set_checkbox('{$id}', '', {$defaultValue}) ?>";
+      } else if ($type == 'range') {
+        $class_input = "form-range";
+      }
+
+      // Retornar input simplificado se for tipo hidden
+      if ($type == 'hidden') {
+        $input = <<< EOT
+        <div class="form-group">
+          <input type="{$type}" name="{$name}" id="{$id}"{$value}{$required}>
+        </div>\n
+        EOT;
+
+        return $input;
+      }
+
+      $input = <<< EOT
+        <div class="form-group">
+          <label for="{$id}" class="$class_label">{$label}</label>
+          <input type="{$type}" class="form-control {$class_input}{$class_function_validate}" name="{$id}" id="{$id}"{$value}{$placeholder}{$minLength}{$maxLength}{$minValue}{$maxValue}{$disabled}{$readonly}{$required}>
+        </div>\n
+        EOT;
+    }
+
+    return $input;
+  }
+
   private function strGetTableHeaderHtml(array $dataTable)
   {
     // retorna os registros que não possuem campo hidden 
@@ -493,8 +597,13 @@ class Codeigniter3_view
       } else {
         $html_field_value = $table_input[GERADOR_COL_NAMEFIELD_DB];
       }
+      // var_dump('<pre>', $table_input[GERADOR_COL_TYPEFIELD_HTML], array_search($table_input[GERADOR_COL_TYPEFIELD_HTML], array('checkbox', 'radio')), '<br>');
+      if(is_int(array_search($table_input[GERADOR_COL_TYPEFIELD_HTML], array('checkbox', 'radio')))){
+        $html_table_body .= "<td><?= humanize_boolean(\$dataValue->{$html_field_value}) ?></td>\n";
+      } else {
+        $html_table_body .= "<td><?= \$dataValue->{$html_field_value} ?></td>\n";
+      }
 
-      $html_table_body .= "<td><?= \$dataValue->{$html_field_value} ?></td>\n";
     }
 
     // var_dump('<pre>', "<textarea>{$html_table_body}</textarea>"); die;
@@ -508,12 +617,12 @@ class Codeigniter3_view
     }, ARRAY_FILTER_USE_BOTH);
 
     if (empty($arr_registro)) {
-      exit('ERROR:: Não existe um registro com chave primaria; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()');
+      exit(json_encode(['error' => "ERROR:: Não existe um registro com chave primaria; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()."]));
     }
     if (count($arr_registro) > 1) {
-      exit('ERROR:: Existem duas chaves primaria para a mesma tabela; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()');
+      exit(json_encode(['error' => "ERROR:: Existem duas chaves primaria para a mesma tabela; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()."]));
     }
 
-    return $arr_registro[0];
+    return $arr_registro[array_key_first($arr_registro)];
   }
 }

@@ -39,6 +39,7 @@ defined('HTML_INPUT_TYPE_LIST') or define('HTML_INPUT_TYPE_LIST', array(
   'file' => array('name' => 'file', 'active' => TRUE, 'attr_minMax' => FALSE),
   'color' => array('name' => 'color', 'active' => TRUE, 'attr_minMax' => FALSE),
   'password' => array('name' => 'password', 'active' => TRUE, 'attr_minMax' => 'length'),
+  'url' => array('name' => 'url', 'active' => TRUE, 'attr_minMax' => 'length'),
 ));
 
 defined('TYPE_EMAIL') or define('TYPE_EMAIL', 'email');
@@ -55,9 +56,19 @@ defined('GERADOR_COL_HIDDEN') or define('GERADOR_COL_HIDDEN', 'gerbas_campoHidde
 defined('GERADOR_COL_ORDER') or define('GERADOR_COL_ORDER', 'gerbas_campoOrden');
 defined('GERADOR_COL_MIN_LENGTH') or define('GERADOR_COL_MIN_LENGTH', 'gerbas_tamanhoMin');
 defined('GERADOR_COL_MAX_LENGTH') or define('GERADOR_COL_MAX_LENGTH', 'gerbas_tamanhoMax');
+defined('GERADOR_COL_DEFAULT_VALUE') or define('GERADOR_COL_DEFAULT_VALUE', 'gerbas_campoValorDefault');
 defined('GERADOR_COL_TYPE_VALIDATION') or define('GERADOR_COL_TYPE_VALIDATION', 'gerbas_tipoConsistencia');
 defined('GERADOR_COL_TYPE_MASK') or define('GERADOR_COL_TYPE_MASK', 'gerbas_tipoMascara');
 defined('GERADOR_COL_NAMETABLE_FOREIGN') or define('GERADOR_COL_NAMETABLE_FOREIGN', 'gerbas_TabelaRelacionada');
 defined('GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE') or define('GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE', 'gerbas_TabelaRelacionada_CodigoCampo');
 defined('GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE') or define('GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE', 'gerbas_TabelaRelacionada_descricaoCampo');
 // defined('GERADOR_COL_NAME_FIELD_HTML_FOREIGN_TABLE') OR define('GERADOR_COL_NAME_FIELD_HTML_FOREIGN_TABLE', 'gerbas_TabelaRelacionada_NomeCampoParaHTML');
+defined('GERADOR_COL_FUNCTION_FIELD') or define('GERADOR_COL_FUNCTION_FIELD', 'gerbas_FuncaoCampo');
+defined('GERADOR_COL_FUNCTION_FIELD_TYPE') or define('GERADOR_COL_FUNCTION_FIELD_TYPE', 'gerbas_FuncaoCampoDestino');
+
+
+defined('GERADOR_ATIVAR_REGISTRO') or define('GERADOR_ATIVAR_REGISTRO', array(
+  '_ativo',
+  '_publicardados',
+  '_publicar_dados',
+));

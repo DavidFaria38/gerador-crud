@@ -30,7 +30,7 @@ class Codeigniter3_routes
     // File names
     $this->fileNameController = ucfirst($config['fileNameController']);
     $this->fileNameModel = ucfirst($config['fileNameModel']);
-    $this->showName = strtolower(explode('_', $this->fileNameModel)[0]);
+    $this->showName = strtolower($config['fileNameShow']);
 
     $this->fileNameViewCreate = $config['fileNameViewCreate'];
     $this->fileNameViewRead = $config['fileNameViewRead'];

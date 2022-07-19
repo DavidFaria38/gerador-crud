@@ -35,7 +35,7 @@ class Codeigniter3_contoller
     // File names
     $this->fileNameController = ucfirst($config['fileNameController']);
     $this->fileNameModel = ucfirst($config['fileNameModel']);
-    $this->showName = strtolower(explode('_', $this->fileNameModel)[0]);
+    $this->showName = strtolower($config['fileNameShow']);
 
     $this->fileNameViewCreate = $config['fileNameViewCreate'];
     $this->fileNameViewRead = $config['fileNameViewRead'];
@@ -148,24 +148,34 @@ class Codeigniter3_contoller
     return $strDataPhpValidation;
   }
 
-  private function strPhpArray(array $dataTable, string $arrayFrom = '$data', bool $validationUpdate = FALSE)
+  private function strControllerArray(array $dataTable, string $arrayFrom = '$data', bool $validationUpdate = FALSE)
   {
     if ($validationUpdate) {
-      // retorna os registros que são chave primaria ou não possuem campo hidden 
+      // retorna os registros que são chave primaria, não possuem campo hidden ou possuem uma função padrão para um campo na alteração 
       $arr_table_data_selected = array_filter($dataTable, function ($value) {
-        return $value[GERADOR_COL_PK] || !$value[GERADOR_COL_HIDDEN];
+        return $value[GERADOR_COL_PK] || !$value[GERADOR_COL_HIDDEN] || (trim($value[GERADOR_COL_FUNCTION_FIELD_TYPE]) == 'update');
       }, ARRAY_FILTER_USE_BOTH);
     } else {
-      // retorna os registros que não possuem campo hidden 
+      // retorna os registros que não possuem campo hidden ou possuem uma função padrão para um campo na inserção
       $arr_table_data_selected = array_filter($dataTable, function ($value) {
-        return !$value[GERADOR_COL_HIDDEN];
+        return !$value[GERADOR_COL_HIDDEN] || (trim($value[GERADOR_COL_FUNCTION_FIELD_TYPE]) == 'create');
       }, ARRAY_FILTER_USE_BOTH);
     }
+
     $str = "array(";
 
     foreach ($arr_table_data_selected as $key => $dataInput) {
       $nomeCampoDB = $dataInput['gerbas_CampoNomeDB'];
-      $str .= "'{$nomeCampoDB}' => {$arrayFrom}['{$nomeCampoDB}'],\n";
+      $type_field = $dataInput[GERADOR_COL_TYPEFIELD_HTML];
+      $function_field = trim($dataInput[GERADOR_COL_FUNCTION_FIELD]);
+
+      if ($type_field == 'checkbox' || $type_field == 'radio') {
+        $str .= "'{$nomeCampoDB}' => (isset({$arrayFrom}['{$nomeCampoDB}']) && {$arrayFrom}['{$nomeCampoDB}'] == 'on') ? TRUE : FALSE ,\n";
+      } else if (!empty($function_field)) {
+        $str .= "'{$nomeCampoDB}' => {$function_field},\n";
+      } else {
+        $str .= "'{$nomeCampoDB}' => {$arrayFrom}['{$nomeCampoDB}'],\n";
+      }
     }
     $str .= ");";
 
@@ -185,7 +195,7 @@ class Codeigniter3_contoller
       exit('ERROR:: Existem duas chaves primaria para a mesma tabela; <br>PATH: Codeigniter3_controller.php getRegistroPrimaryKey()');
     }
 
-    return $arr_registro[0];
+    return $arr_registro[array_key_first($arr_registro)];
   }
 
   private function strSearchOtherTables(array $dataTable)
@@ -243,7 +253,7 @@ class Codeigniter3_contoller
   private function strInserir_salvar(array $dataTable)
   {
     $strDataPhpValidation = $this->strPhpValidation($dataTable, FALSE);
-    $strDataArray = $this->strPhpArray($dataTable, '$data_post', FALSE);
+    $strDataArray = $this->strControllerArray($dataTable, '$data_post', FALSE);
 
     $str = "
     public function {$this->functionNameCreate}_{$this->functionNameSufix}(\$item_id = 0)
@@ -318,7 +328,7 @@ class Codeigniter3_contoller
           redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
         }
 
-        \$data_related_tables = \$this->matricula->consultar_from_related_tables();
+        \$data_related_tables = \$this->{$this->showName}->consultar_from_related_tables();
 
         \$data_view = array(
           'data' => \$dados_item,
@@ -361,7 +371,7 @@ class Codeigniter3_contoller
   private function strAlterar_salvar(array $dataTable)
   {
     $strDataPhpValidation = $this->strPhpValidation($dataTable, TRUE);
-    $strDataArray = $this->strPhpArray($dataTable, '$data_post', TRUE);
+    $strDataArray = $this->strControllerArray($dataTable, '$data_post', TRUE);
 
     $str = "
     public function {$this->functionNameUpdate}_{$this->functionNameSufix}(\$item_id = 0)

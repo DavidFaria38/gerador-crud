@@ -2,24 +2,29 @@
 
 
 require_once 'app/frameworks/codeigniter3/Codeigniter3.php';
-require_once 'app/GetDataTable.php';
+require_once 'app/DataGerador.php';
 
 class Main
 {
   function __construct()
 
   {
-    echo "class::Main inicializada!<br>";
+    // echo "class::Main inicializada!<br>";
   }
 
-  function run(string $typeFramework)
+  function run(array $config = array())
   {
-    if (!array_key_exists($typeFramework, FRAMEWORK_LIST)) {
-      exit("Framework {$typeFramework} não existe.");
+    if (!isset($config['frameworkType'])) {
+      exit(json_encode(['error' => "Configurações invalida."]));
+
+    }
+    if (!array_key_exists($config['frameworkType'], FRAMEWORK_LIST)) {
+      exit(json_encode(['error' => "Framework {$config['frameworkType']} não existe."]));
+
     }
 
     // configurações do gerador de crud
-    $config = array(
+    $config_framework = array(
       // 'fileNameController' => '', // no controller, nome do arquivo controller; OBS: é definido na framework
       // 'fileNameModel' => '', // no controller e model, nome do arquivo model; OBS: é definido na framework
       'fileNameViewCreate' => 'inserir', // na view, nome header e titulo do arquivo
@@ -34,24 +39,31 @@ class Main
       'directoryName' => '', // nome do diretorio a onde será armazenado os arquivos
     );
 
-    if ($typeFramework == FRAMEWORK_LIST['CODEIGNITER_3']['name']) {
-      $config['directoryName'] = 'codeigniter3_' . date('Y-m-d_H-i-s');
+    if ($config['frameworkType'] == FRAMEWORK_LIST['CODEIGNITER_3']['name']) {
+      $config_framework['directoryName'] = 'codeigniter3_' . date('Y-m-d_H-i-s');
 
-      $framework = new Codeigniter3($config);
+      $framework = new Codeigniter3($config_framework);
     }
 
-    $getDataTable = new GetDataTable();
+    $getDataTable = new DataGerador();
     $arr_data_tables = $getDataTable->getDataTable();
 
+    $selectedTables = $config['selectedTables'];
+
     foreach ($arr_data_tables as $key => $arr_data_table) {
-      $framework->createFromTable($arr_data_table);
+      if ($selectedTables[array_search($key, $selectedTables)] == $key) {
+        $dump_dir = $framework->createFromTable($arr_data_table);
+      }
     }
+
+    return $dump_dir;
   }
 
-  function makeDB(){
+  function makeDB()
+  {
     $db = new Database();
 
-    var_dump($db->createDB());
+    $db->createDB();
     $db->createTable();
   }
 }
