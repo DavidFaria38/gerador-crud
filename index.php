@@ -45,7 +45,7 @@ $router->get('/make', function () {
 
 $router->get('/create_database', function () {
   $main = new Main();
-  // $main->makeDB();
+  $main->makeDB();
   
-  header('Location : http://localhost/git/gerador_crud/', true, 200); die;
+  // header('Location : http://localhost/git/gerador_crud/', true, 200); die;
 });
