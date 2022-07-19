@@ -106,7 +106,7 @@ class Database
     
     $query = "
     CREATE TABLE {$nome_tabela} (
-      {$codigo} int,
+      {$codigo} int NOT NULL AUTO_INCREMENT,
       {$nomeTabelaDB} varchar(200),
       {$CampoNomeDB} varchar(200),
       {$campoLabelHTML} varchar(200),
@@ -132,9 +132,11 @@ class Database
     $result_mysql = $conn->query($query);
 
     $result = $result_mysql;
+    if($result == false) {
+      var_dump('<pre>', $conn); die;
+    }
 
     $conn->close();
-    
     
     return $result;
   }
