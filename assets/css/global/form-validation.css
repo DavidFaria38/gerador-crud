@@ -1,0 +1,15 @@
+
+label.input-required::after {
+  content: ' *';
+  color: red;
+  font-style: 900;
+}
+
+label.input-required {
+  font-weight: 600;
+}
+
+.is-invalid {
+  border: solid 0.5px #ff0000;
+  margin-top:2px
+}

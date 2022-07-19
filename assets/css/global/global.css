@@ -1,0 +1,57 @@
+body {
+  background-color: #ececec;
+}
+
+.ger-width-view {
+  max-width: 1400px;
+  width: 100%;
+}
+
+.ger-width-view>.row {
+  margin: 0;
+}
+
+.ger-header-view {
+  position: relative;
+  z-index: 10;
+  margin-bottom: -10px;
+  padding: 50px 30px 15px;
+  background-color: #0276BF;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.ger-body-view {
+  z-index: 5;
+  background-color: #FFFFFF;
+  padding: 40px 20px 20px;
+  margin-bottom: 20px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.ger-body-view.no-padding {
+  padding: 0;
+}
+
+.ger-body-view.no-padding-but-top {
+  padding: 40px 0 0 0;
+}
+
+/* Bootstrap equivalente de >= md */
+@media only screen and (max-width: 767px) {
+  .ger-body-view {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+}
+
+.form-check,
+.form-group,
+.form-floating {
+  margin: 10px 0;
+}
+
+.ger-overflow {
+  overflow-x: auto !important;
+}
