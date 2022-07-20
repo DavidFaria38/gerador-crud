@@ -99,8 +99,7 @@ class Codeigniter3_contoller
 
   private function strStartFunction()
   {
-    return "
-    <?php
+    $str = "<?php
 
     class {$this->fileNameController} extends CI_Controller
     {
@@ -110,6 +109,7 @@ class Codeigniter3_contoller
         \$this->load->model('{$this->fileNameModel}', '{$this->showName}');
       }
     ";
+    return $str;
   }
   private function strEndFunction()
   {

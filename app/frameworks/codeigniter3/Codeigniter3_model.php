@@ -167,12 +167,13 @@ class Codeigniter3_model
 
   private function strStartFunction()
   {
-    return "
-    <?php
+    $str = "<?php
 
     class {$this->fileNameModel} extends CI_Model
     {
     ";
+
+    return $str;
   }
   private function strEndFunction()
   {
