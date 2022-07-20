@@ -19,6 +19,9 @@ class Codeigniter3_view
   private string $dataUpdate;
   private string $dataRead;
 
+  // optional
+  private string $strOptionalPreBaseUrl;
+
   function __construct(array $config = array())
   {
     // File names
@@ -35,6 +38,8 @@ class Codeigniter3_view
     $this->showName = strtolower($config['fileNameShow']);
     // other
     // $this->functionDeleteResponseJson = (isset($config['functionDeleteResponseJson']) && $config['functionDeleteResponseJson']) ? TRUE : FALSE;
+    // optional
+    $this->strOptionalPreBaseUrl = $config['strOptionalPreBaseUrl'];
   }
 
   public function run(array $dataTable)
@@ -146,7 +151,7 @@ class Codeigniter3_view
 
     <div class="row">
       <div class="d-flex justify-content-end pb-3">
-        <a href="<?= base_url('{$this->showName}/{$this->functionNameCreate}'); ?>" class="btn btn-primary btn-lg">Cadastrar</a>
+        <a href="<?= base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameCreate}'); ?>" class="btn btn-primary btn-lg">Cadastrar</a>
       </div>
     </div>
 
@@ -161,7 +166,7 @@ class Codeigniter3_view
         <tbody>
           <?php foreach (\$data as \$key => \$dataValue) : ?>
             <tr>
-              <td><a href="<?= base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$dataValue->{$field_pk}) ?>" class="btn btn-primary">Editar</a></td>
+              <td><a href="<?= base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameUpdate}/' . \$dataValue->{$field_pk}) ?>" class="btn btn-primary">Editar</a></td>
               {$html_table_body}
             </tr>
           <?php endforeach; ?>
@@ -183,7 +188,7 @@ class Codeigniter3_view
     <?= get_flash_message('error'); ?>
     <?= form_validation_errors(); ?>
 
-    <?= form_open(base_url('{$this->showName}/{$this->functionNameCreate}'), ['class' => 'form_validate']); ?>
+    <?= form_open(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameCreate}'), ['class' => 'form_validate']); ?>
 
     {$str_inputs_create}
     
@@ -207,7 +212,7 @@ class Codeigniter3_view
     <?= get_flash_message('error'); ?>
     <?= form_validation_errors(); ?>
 
-    <?= form_open(base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$item_id), ['class' => 'form_validate']); ?>
+    <?= form_open(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameUpdate}/' . \$item_id), ['class' => 'form_validate']); ?>
 
     {$str_inputs_update}
     
@@ -537,6 +542,13 @@ class Codeigniter3_view
         $class_label = "form-check-label";
         $defaultValue = ($defaultValue == "''") ? 'FALSE' : 'TRUE';
         $value = (isset($input_config['value']) && !empty($input_config['value'])) ? " <?= set_checkbox('{$input_config['value']}', \$data->{$input_config['value']}, (\$data->{$input_config['value']} == 1)) ?>" : " <?= set_checkbox('{$id}', '', {$defaultValue}) ?>";
+        $input = <<< EOT
+          <div class="form-check">
+            <input type="{$type}" class="{$class_input}{$class_function_validate}" name="{$id}" id="{$id}"{$value}{$disabled}{$readonly}{$required}>
+            <label for="{$id}" class="$class_label">{$label}</label>
+          </div>\n
+          EOT;
+          return $input;
       } else if ($type == 'range') {
         $class_input = "form-range";
       }

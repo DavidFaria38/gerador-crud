@@ -24,6 +24,11 @@ class Codeigniter3_contoller
   private string $dataUpdate;
   private string $dataDelete;
 
+
+  private string $strOptionalControllerConstructor;
+  private string $strOptionalPathModel;
+  private string $strOptionalPreBaseUrl;
+
   function __construct(array $config = array())
   {
     // Function names
@@ -43,6 +48,11 @@ class Codeigniter3_contoller
     $this->dirView = $config['directoryView'];
     // other
     $this->functionDeleteResponseJson = $config['functionDeleteResponseJson'];
+    
+    // optional
+    $this->strOptionalControllerConstructor = $config['strOptionalControllerConstructor'];
+    $this->strOptionalPathModel = $config['strOptionalPathModel'];
+    $this->strOptionalPreBaseUrl = $config['strOptionalPreBaseUrl'];
   }
 
   public function run(array $dataTable)
@@ -106,7 +116,9 @@ class Codeigniter3_contoller
       public function __construct()
       {
         parent::__construct();
-        \$this->load->model('{$this->fileNameModel}', '{$this->showName}');
+        {$this->strOptionalControllerConstructor}
+
+        \$this->load->model('{$this->strOptionalPathModel}{$this->fileNameModel}', '{$this->showName}');
       }
     ";
     return $str;
@@ -274,10 +286,10 @@ class Codeigniter3_contoller
   
         if (empty(\$linha)) {
           set_flash_message_danger('error', 'Não foi possivel inserir o registro, tente novamente.');
-          redirect(base_url('{$this->showName}/{$this->functionNameCreate}'));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameCreate}'));
         } else {
           set_flash_message_success('success', 'Registro inserido com sucesso!');
-          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}'));
         }
       }
     }
@@ -318,14 +330,14 @@ class Codeigniter3_contoller
 
         if (empty(\$item_id)) {
           set_flash_message_danger('error', 'Item não encontrado.');
-          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}'));
         }
 
         \$dados_item = \$this->{$this->showName}->{$this->functionNameRead}(\$item_id);
 
         if (empty(\$dados_item)) {
           set_flash_message_danger('error', 'Registro não encontrado.');
-          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}'));
         }
 
         \$data_related_tables = \$this->{$this->showName}->consultar_from_related_tables();
@@ -347,14 +359,14 @@ class Codeigniter3_contoller
 
         if (empty(\$item_id)) {
           set_flash_message_danger('error', 'Item não encontrado.');
-          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}'));
         }
 
         \$dados_item = \$this->{$this->showName}->{$this->functionNameRead}(\$item_id);
 
         if (empty(\$dados_item)) {
           set_flash_message_danger('error', 'Registro não encontrado.');
-          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}'));
         }
 
         \$data_view = array(
@@ -392,10 +404,10 @@ class Codeigniter3_contoller
 
         if (empty(\$linha)) {
           set_flash_message_danger('error', 'Não foi possivel alterar o registro, tente novamente.');
-          redirect(base_url('{$this->showName}/{$this->functionNameUpdate}/' . \$item_id));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameUpdate}/' . \$item_id));
         } else {
           set_flash_message_success('success', 'Registro alterado com sucesso!');
-          redirect(base_url('{$this->showName}/{$this->functionNameRead}'));
+          redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}'));
         }
       }
     }
@@ -426,7 +438,7 @@ class Codeigniter3_contoller
         \$message_error = 'Registro não encontrado.';
         {$response_json} exit(response_json(array('error' => \$message_error)));
         {$response_set_flashdata} set_flash_message_danger('error', \$message_error);
-        {$response_set_flashdata} redirect(base_url('{$this->showName}/{$this->functionNameRead}')); 
+        {$response_set_flashdata} redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}')); 
       }
   
       \$dados_item = \$this->{$this->showName}->{$this->functionNameRead}(\$item_id);
@@ -435,7 +447,7 @@ class Codeigniter3_contoller
         \$message_error = 'Registro não encontrado.';
         {$response_json} exit(response_json(array('error' => \$message_error)));
         {$response_set_flashdata} set_flash_message_danger('error', \$message_error);
-        {$response_set_flashdata} redirect(base_url('{$this->showName}/{$this->functionNameRead}')); 
+        {$response_set_flashdata} redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}')); 
       }
   
       \$linha = \$this->{$this->showName}->{$this->functionNameDelete}(\$item_id);
@@ -444,12 +456,12 @@ class Codeigniter3_contoller
         \$message_error = 'Não foi possivel remover o registro.';
         {$response_json} exit(response_json(array('error' => \$message_error)));
         {$response_set_flashdata} set_flash_message_danger('error', \$message_error);
-        {$response_set_flashdata} redirect(base_url('{$this->showName}/{$this->functionNameDelete}')); 
+        {$response_set_flashdata} redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameDelete}')); 
       } else {
         \$message_success = 'Não foi possivel remover o registro.';
         {$response_json} exit(response_json(array('success' => \$message_success)));
         {$response_set_flashdata} set_flash_message_success('success', \$message_success);
-        {$response_set_flashdata} redirect(base_url('{$this->showName}/{$this->functionNameRead}')); 
+        {$response_set_flashdata} redirect(base_url('{$this->strOptionalPreBaseUrl}{$this->showName}/{$this->functionNameRead}')); 
       }
     }
     ";

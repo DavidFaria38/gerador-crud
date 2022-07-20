@@ -35,6 +35,10 @@ class Codeigniter3 implements Interface_framework
       
       'directoryName' => $config['directoryName'],
       'directoryView' => '',
+
+      'strOptionalControllerConstructor' => "\nif (!is_logged_sistema()) return redirect(base_url_sistema('login'));", // para inserir no __constructor do controller
+      'strOptionalPathModel' => "sistema/evento/", // para inserir no __constroctor do controller, caminho do arquivo model
+      'strOptionalPreBaseUrl' => "sistema/", // prefixo para campo de redirecionamento, controller e views
     );
 
   }
