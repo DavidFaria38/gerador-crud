@@ -115,8 +115,8 @@
           // console.log(element);
 
           td1.innerHTML = `<input type="checkbox" name="table_selected" id="table_selected">`;
-          td2.innerHTML = `${element}`;
-          td3.innerHTML = ``;
+          td2.innerHTML = `${element.gerbas_nomeTabelaDB}`;
+          td3.innerHTML = `${element.quantidade_elementos}`;
           tr.appendChild(td1);
           tr.appendChild(td2);
           tr.appendChild(td3);

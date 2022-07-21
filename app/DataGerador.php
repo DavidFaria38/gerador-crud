@@ -67,20 +67,15 @@ class DataGerador
 
 
     $sql_query = "
-    SELECT DISTINCT {$sql_distinct} 
+    SELECT {$sql_distinct}, COUNT({$sql_distinct}) as quantidade_elementos 
     FROM {$sql_table}
+    GROUP BY {$sql_distinct}
     ORDER BY {$sql_orderby} ASC;";
 
     $db = new Database();
     $arr_query_result = $db->query($sql_query);
 
-    $arr_result = array();
-    foreach ($arr_query_result as $key => $value) {
-      array_push($arr_result, array_values($value)[0]);
-    }
-
-
-    return $arr_result;
+    return $arr_query_result;
   }
 
   function getAllDataFromDB()
