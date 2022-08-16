@@ -1,16 +1,16 @@
 // mascaras
 $(document).ready(() => {
-  $('input.date').mask('00/00/0000');
-  $('input.time').mask('00:00:00');
-  $('input.date-time').mask('00/00/0000 00:00:00');
+  $('input.date').inputmask('99/99/9999');
+  $('input.time').inputmask('99:99:99');
+  $('input.date-time').inputmask('99/99/9999 99:99:99');
 
-  $('input.cep').mask('00000-000');
-  $('input.cpf').mask('000.000.000-00');
-  $('input.rg').mask('00.000.000-00');
-  $('input.cnpj').mask('00.000.000/0000-00');
+  $('input.cep').inputmask('99999-999');
+  $('input.cpf').inputmask('999.999.999-99');
+  $('input.rg').inputmask('99.999.999-99');
+  $('input.cnpj').inputmask('99.999.999/9999-99');
 
-  $('input.phone').mask('(00) 0000-0000');
-  $('input.mobile-phone').mask('(00) 90000-0000');
+  $('input.phone').inputmask('(99)99999-9999');
+  $('input.mobile-phone').inputmask('(99)99999-9999');
 
   // $('input.money').mask('000.000.000.000.000,00', { reverse: true });
   $('.money').maskMoney({
