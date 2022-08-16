@@ -39,6 +39,8 @@ class Codeigniter3 implements Interface_framework
       'strOptionalControllerConstructor' => "\nif (!is_logged_sistema()) return redirect(base_url_sistema('login'));", // para inserir no __constructor do controller
       'strOptionalPathModel' => "sistema/evento/", // para inserir no __constroctor do controller, caminho do arquivo model
       'strOptionalPreBaseUrl' => "sistema/", // prefixo para campo de redirecionamento, controller e views
+      'strOptionalUrlPath' => "sistema/", // para inserir na url de routes, url para acesso
+      'strOptionalUrlControllerPath' => "sistema/evento/", // para inserir no caminho do controller em routes
     );
 
   }
@@ -48,7 +50,7 @@ class Codeigniter3 implements Interface_framework
     // configuração de nomes de arquivos por nome de tabela
     $table_name = $dataTable[0][GERADOR_COL_NAMETABLE];
     $file_name = ucfirst(strtolower($table_name));
-    $file_name = str_replace('T', '', $file_name);
+    $file_name = str_replace('T_', '', $file_name);
     $file_name = ucfirst($file_name);
     $this->config['fileNameController'] = "{$file_name}_controller";
     $this->config['fileNameModel'] = "{$file_name}_model";

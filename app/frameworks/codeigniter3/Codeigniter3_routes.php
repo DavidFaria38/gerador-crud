@@ -18,6 +18,10 @@ class Codeigniter3_routes
   public string $functionNameUpdate;
   public string $functionNameDelete;
   public string $functionNameSufix;
+  
+  public string $strOptionalUrlPath;
+  public string $strOptionalUrlControllerPath;
+
 
   function __construct(array $config = array())
   {
@@ -38,6 +42,10 @@ class Codeigniter3_routes
     $this->dirView = $config['directoryView'];
     // other
     $this->functionDeleteResponseJson = $config['functionDeleteResponseJson'];
+    // optional
+    $this->strOptionalUrlPath = (!empty($config['strOptionalUrlPath'])) ? $config['strOptionalUrlPath'] : '';
+    $this->strOptionalUrlControllerPath = (!empty($config['strOptionalUrlControllerPath'])) ? $config['strOptionalUrlControllerPath'] : '';
+    
   }
 
   public function run()
@@ -45,13 +53,13 @@ class Codeigniter3_routes
     $type_http_delete = ($this->functionDeleteResponseJson) ? 'post' : 'get' ;
 
     $strRoutes = "/* Routes: {$this->showName} */\n";
-    $strRoutes .= "\$route['{$this->showName}']['get'] = '{$this->fileNameController}/{$this->functionNameRead}';\n";
-    $strRoutes .= "\$route['{$this->showName}/{$this->functionNameRead}']['get'] = '{$this->fileNameController}/{$this->functionNameRead}';\n";
-    $strRoutes .= "\$route['{$this->showName}/{$this->functionNameCreate}']['get'] = '{$this->fileNameController}/{$this->functionNameCreate}';\n";
-    $strRoutes .= "\$route['{$this->showName}/{$this->functionNameCreate}']['post'] = '{$this->fileNameController}/{$this->functionNameCreate}_{$this->functionNameSufix}';\n";
-    $strRoutes .= "\$route['{$this->showName}/{$this->functionNameUpdate}/(:num)']['get'] = '{$this->fileNameController}/{$this->functionNameUpdate}/$1';\n";
-    $strRoutes .= "\$route['{$this->showName}/{$this->functionNameUpdate}/(:num)']['post'] = '{$this->fileNameController}/{$this->functionNameUpdate}_{$this->functionNameSufix}/$1';\n";
-    $strRoutes .= "\$route['{$this->showName}/{$this->functionNameDelete}/(:num)']['{$type_http_delete}'] = '{$this->fileNameController}/{$this->functionNameDelete}/$1';\n";
+    $strRoutes .= "\$route['{$this->strOptionalUrlPath}{$this->showName}']['get'] = '{$this->strOptionalUrlControllerPath}{$this->fileNameController}/{$this->functionNameRead}';\n";
+    $strRoutes .= "\$route['{$this->strOptionalUrlPath}{$this->showName}/{$this->functionNameRead}']['get'] = '{$this->strOptionalUrlControllerPath}{$this->fileNameController}/{$this->functionNameRead}';\n";
+    $strRoutes .= "\$route['{$this->strOptionalUrlPath}{$this->showName}/{$this->functionNameCreate}']['get'] = '{$this->strOptionalUrlControllerPath}{$this->fileNameController}/{$this->functionNameCreate}';\n";
+    $strRoutes .= "\$route['{$this->strOptionalUrlPath}{$this->showName}/{$this->functionNameCreate}']['post'] = '{$this->strOptionalUrlControllerPath}{$this->fileNameController}/{$this->functionNameCreate}_{$this->functionNameSufix}';\n";
+    $strRoutes .= "\$route['{$this->strOptionalUrlPath}{$this->showName}/{$this->functionNameUpdate}/(:num)']['get'] = '{$this->strOptionalUrlControllerPath}{$this->fileNameController}/{$this->functionNameUpdate}/$1';\n";
+    $strRoutes .= "\$route['{$this->strOptionalUrlPath}{$this->showName}/{$this->functionNameUpdate}/(:num)']['post'] = '{$this->strOptionalUrlControllerPath}{$this->fileNameController}/{$this->functionNameUpdate}_{$this->functionNameSufix}/$1';\n";
+    $strRoutes .= "\$route['{$this->strOptionalUrlPath}{$this->showName}/{$this->functionNameDelete}/(:num)']['{$type_http_delete}'] = '{$this->strOptionalUrlControllerPath}{$this->fileNameController}/{$this->functionNameDelete}/$1';\n";
     $strRoutes .= "\n";
 
     return $strRoutes;
