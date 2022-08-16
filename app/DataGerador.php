@@ -15,7 +15,7 @@ class DataGerador
     $arr_result = array();
 
     foreach ($arr_table_name as $key => $table_name) {
-      $key_table = strtolower($table_name);
+      $key_table = strtolower($table_name[GERADOR_COL_NAMETABLE]);
       $arr_result[$key_table] = array();
 
       foreach ($arr_gerador_table_data as $inner_key => $table_item) {
