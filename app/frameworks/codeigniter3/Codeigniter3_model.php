@@ -36,8 +36,8 @@ class Codeigniter3_model
     $this->dataDelete = $this->createFunctionDelete($dataTable);
 
     $strFile = $this->strStartFunction();
-    $strFile .= $this->dataCreate;
     $strFile .= $this->dataRead;
+    $strFile .= $this->dataCreate;
     $strFile .= $this->dataUpdate;
     $strFile .= $this->dataDelete;
     $strFile .= $this->strEndFunction();
@@ -237,7 +237,7 @@ class Codeigniter3_model
       $foreign_table_alias = $arr_letters[$key]; // pseudônimo para tabela
       // $foreign_field_value = $data_input[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE];
 
-      $str_join .= "\$db->join('{$foreign_table_name} as {$foreign_table_alias}', '{$foreign_table_alias}.{$foreign_primary_key_field_name} = {$main_table_alias}.{$main_field_name}');\n";
+      $str_join .= "\$db->join('{$foreign_table_name} as {$foreign_table_alias}', '{$foreign_table_alias}.{$foreign_primary_key_field_name} = {$main_table_alias}.{$main_field_name}', 'left');\n";
     }
 
     return $str_join;

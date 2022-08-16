@@ -63,8 +63,8 @@ class Codeigniter3_contoller
     $this->dataDelete = $this->createFunctionDelete($dataTable);
 
     $strFile = $this->strStartFunction();
-    $strFile .= $this->dataCreate;
     $strFile .= $this->dataRead;
+    $strFile .= $this->dataCreate;
     $strFile .= $this->dataUpdate;
     $strFile .= $this->dataDelete;
     $strFile .= $this->strEndFunction();
