@@ -96,13 +96,13 @@ class Database
     $tipoConsistencia = GERADOR_COL_TYPE_VALIDATION;
     $tipoMascara = GERADOR_COL_TYPE_MASK;
     $tipoCampoHTML = GERADOR_COL_TYPEFIELD_HTML;
+    $campoValorDefault = GERADOR_COL_DEFAULT_VALUE;
     $TabelaRelacionada = GERADOR_COL_NAMETABLE_FOREIGN;
     $TabelaRelacionada_CodigoCampo = GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE;
     $TabelaRelacionada_valorCampo = GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE;
-    
-    $campoValorDefault = GERADOR_COL_DEFAULT_VALUE;
     $FuncaoCampo  = GERADOR_COL_FUNCTION_FIELD;
     $FuncaoCampoDestino = GERADOR_COL_FUNCTION_FIELD_TYPE;
+    
   
     
     $query = "

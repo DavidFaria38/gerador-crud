@@ -577,12 +577,13 @@ class Codeigniter3_view
 
   private function strGetTableHeaderHtml(array $dataTable)
   {
-    // retorna os registros que não possuem campo hidden 
+    // retorna os registros que são para aparecer no relatorio 
     $arr_table_data_selected = array_filter($dataTable, function ($value) {
-      return !$value[GERADOR_COL_HIDDEN];
+      return $value[GERADOR_COL_REPORT];
     }, ARRAY_FILTER_USE_BOTH);
 
     $html_table_header = "";
+    // var_dump('<pre>', $arr_table_data_selected); die;
 
     foreach ($arr_table_data_selected as $key => $table_input) {
       $html_field_name = $table_input[GERADOR_COL_NAMEFIELD_HTML];
@@ -590,18 +591,26 @@ class Codeigniter3_view
 
       $html_table_header .= "<th>{$html_field_name}</th>\n";
     }
-
+    // var_dump('<pre>', $html_table_header); die;
     return $html_table_header;
   }
 
   private function strGetTableBodyHtml(array $dataTable)
   {
-    // retorna os registros que são chave primaria ou não possuem campo hidden 
+    // retorna os registros que são para aparecer no relatorio 
     $arr_table_data_selected = array_filter($dataTable, function ($value) {
-      return !$value[GERADOR_COL_HIDDEN];
+      return $value[GERADOR_COL_REPORT];
     }, ARRAY_FILTER_USE_BOTH);
 
     $html_table_body = "";
+
+    /* insira o nome da funções para manipular os dados recebidos do Banco de dados */
+    $tableCellFunction_boolean = 'humanize_boolean'; // default: humanize_boolean
+    $tableCellFunction_date = 'format_date_br'; // default: format_date_br
+    $tableCellFunction_time = ''; // default: 
+    $tableCellFunction_datetime = 'format_datetime_br'; // default: format_datetime_br
+    $tableCellFunction_decimal = 'decimal_to_number'; // default: decimal_to_number
+    $tableCellFunction_moneydecimal = 'decimal_to_number'; // default: decimal_to_number
 
     foreach ($arr_table_data_selected as $key => $table_input) {
       if (!empty($table_input[GERADOR_COL_NAMETABLE_FOREIGN])) {
@@ -609,13 +618,17 @@ class Codeigniter3_view
       } else {
         $html_field_value = $table_input[GERADOR_COL_NAMEFIELD_DB];
       }
-      // var_dump('<pre>', $table_input[GERADOR_COL_TYPEFIELD_HTML], array_search($table_input[GERADOR_COL_TYPEFIELD_HTML], array('checkbox', 'radio')), '<br>');
-      if(is_int(array_search($table_input[GERADOR_COL_TYPEFIELD_HTML], array('checkbox', 'radio')))){
-        $html_table_body .= "<td><?= humanize_boolean(\$dataValue->{$html_field_value}) ?></td>\n";
+
+      // se coluna de mostrar relatorio estiver selecionada
+      if (is_int(array_search($table_input[GERADOR_COL_TYPEFIELD_HTML], array('checkbox', 'radio')))) {
+        $html_table_body .= "<td><?= {$tableCellFunction_boolean}(\$dataValue->{$html_field_value}) ?></td>\n";
+      } else if (is_int(array_search($table_input[GERADOR_COL_TYPEFIELD_HTML], array('date')))) {
+        $html_table_body .= "<td><?= {$tableCellFunction_date}(\$dataValue->{$html_field_value}) ?></td>\n";
+      } else if (is_int(array_search($table_input[GERADOR_COL_TYPEFIELD_HTML], array('datetime', 'datetime-local')))) {
+        $html_table_body .= "<td><?= {$tableCellFunction_date}(\$dataValue->{$html_field_value}) ?></td>\n";
       } else {
         $html_table_body .= "<td><?= \$dataValue->{$html_field_value} ?></td>\n";
       }
-
     }
 
     // var_dump('<pre>', "<textarea>{$html_table_body}</textarea>"); die;
