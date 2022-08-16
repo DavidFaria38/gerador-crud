@@ -32,6 +32,7 @@ defined('HTML_INPUT_TYPE_LIST') or define('HTML_INPUT_TYPE_LIST', array(
   'hidden' => array('name' => 'hidden', 'active' => TRUE, 'attr_minMax' => FALSE),
   'range' => array('name' => 'range', 'active' => TRUE, 'attr_minMax' => 'value'),
   'datetime-local' => array('name' => 'datetime', 'active' => TRUE, 'attr_minMax' => 'value'),
+  'datetime' => array('name' => 'date', 'active' => TRUE, 'attr_minMax' => 'value'),
   'date' => array('name' => 'date', 'active' => TRUE, 'attr_minMax' => 'value'),
   'time' => array('name' => 'time', 'active' => TRUE, 'attr_minMax' => 'value'),
   'week' => array('name' => 'week', 'active' => TRUE, 'attr_minMax' => 'value'),
