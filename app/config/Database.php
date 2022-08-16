@@ -90,6 +90,7 @@ class Database
     $campoRequired = GERADOR_COL_REQUIRED;
     $campoHidden = GERADOR_COL_HIDDEN;
     $campoOrdem = GERADOR_COL_ORDER;
+    $campoRelatorio = GERADOR_COL_REPORT;
     $tamanhoMin = GERADOR_COL_MIN_LENGTH;
     $tamanhoMax = GERADOR_COL_MAX_LENGTH;
     $tipoConsistencia = GERADOR_COL_TYPE_VALIDATION;
@@ -114,6 +115,7 @@ class Database
       {$campoRequired} boolean,
       {$campoHidden} boolean,
       {$campoOrdem} int,
+      {$campoRelatorio} int,
       {$tamanhoMin} int,
       {$tamanhoMax} int,
       {$tipoConsistencia} varchar(200),

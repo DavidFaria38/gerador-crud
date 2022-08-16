@@ -40,6 +40,7 @@ class DataGerador
             GERADOR_COL_PK => $table_item[GERADOR_COL_PK],
             GERADOR_COL_ORDER => $table_item[GERADOR_COL_ORDER],
             GERADOR_COL_HIDDEN => $table_item[GERADOR_COL_HIDDEN],
+            GERADOR_COL_REPORT => $table_item[GERADOR_COL_REPORT],
             GERADOR_COL_REQUIRED => $table_item[GERADOR_COL_REQUIRED],
             GERADOR_COL_MAX_LENGTH => $table_item[GERADOR_COL_MAX_LENGTH],
             GERADOR_COL_MIN_LENGTH => $table_item[GERADOR_COL_MIN_LENGTH],

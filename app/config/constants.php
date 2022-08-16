@@ -54,6 +54,7 @@ defined('GERADOR_COL_PK') or define('GERADOR_COL_PK', 'gerbas_campoPrimaryKey');
 defined('GERADOR_COL_REQUIRED') or define('GERADOR_COL_REQUIRED', 'gerbas_campoRequired');
 defined('GERADOR_COL_HIDDEN') or define('GERADOR_COL_HIDDEN', 'gerbas_campoHidden');
 defined('GERADOR_COL_ORDER') or define('GERADOR_COL_ORDER', 'gerbas_campoOrden');
+defined('GERADOR_COL_REPORT') or define('GERADOR_COL_REPORT', 'gerbas_relatorio');
 defined('GERADOR_COL_MIN_LENGTH') or define('GERADOR_COL_MIN_LENGTH', 'gerbas_tamanhoMin');
 defined('GERADOR_COL_MAX_LENGTH') or define('GERADOR_COL_MAX_LENGTH', 'gerbas_tamanhoMax');
 defined('GERADOR_COL_DEFAULT_VALUE') or define('GERADOR_COL_DEFAULT_VALUE', 'gerbas_campoValorDefault');
