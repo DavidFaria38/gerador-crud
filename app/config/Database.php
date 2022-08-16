@@ -140,4 +140,31 @@ class Database
     
     return $result;
   }
+  
+  function truncateTable()
+  {
+    // Create connection
+    $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+      die("Connection with Database failed: " . $conn->connect_error);
+    }
+
+    
+    $nome_tabela = GERADOR_DB_TABLE; 
+  
+    $query = "TRUNCATE TABLE {$nome_tabela};";
+
+    $result_mysql = $conn->query($query);
+
+    $result = $result_mysql;
+    if($result == false) {
+      var_dump('<pre>', $conn); die;
+    }
+
+    $conn->close();
+    
+    return $result;
+  }
 }

@@ -66,4 +66,11 @@ class Main
     $db->createDB();
     $db->createTable();
   }
+  
+  function truncateTable()
+  {
+    $db = new Database();
+
+    $db->truncateTable();
+  }
 }
