@@ -25,18 +25,28 @@
   body {
     background-color: lightgray;
   }
+
+  table tbody td:first-child {
+    width: 10px;
+    text-align: center;
+  }
+
+  table tbody td:last-child {
+    width: 10px;
+    text-align: center;
+  }
 </style>
 
 <body>
   <div class="container">
     <div class="row justify-content-center">
 
-      <div class="col-6">
+      <div class="col-lg-12">
         <div class="card">
-          <div class="col-12">
+          <div class="card-body">
 
             <div class="form-group">
-              <div class="col-6">
+              <div class="col-md-6">
                 <label for="select_framework">Selecione o framework</label>
                 <select name="select_framework" id="select_framework">
                   <?php foreach (FRAMEWORK_LIST as $key => $framework) { ?>
@@ -57,11 +67,12 @@
                     <th>Quantidade elementos</th>
                   </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                </tbody>
                 <tfoot>
                   <tr>
                     <td>
-                      <input type="checkbox" name="select_all" id="select_all" checked="false">
+                      <input type="checkbox" name="select_all" id="select_all">
                       <label for="select_all">Selecionar todos</label>
                     </td>
                   </tr>
