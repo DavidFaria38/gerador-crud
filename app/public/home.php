@@ -8,11 +8,12 @@
 
   <title>Gerador Base</title>
 
+  <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+  <!-- Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
 
   <!-- Datatables -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css" />
@@ -120,6 +121,7 @@
 
 <script>
   $(document).ready(() => {
+    // buscar elementos do banco de dados
     $.ajax({
       url: '<?= BASEURL ?>/get_tables',
       type: 'post',
@@ -129,7 +131,7 @@
 
         const list_table_names = response.table_name;
 
-        if(list_table_names.length == 0){
+        if (list_table_names.length == 0) {
           let tr = document.createElement('tr');
           let td1 = document.createElement('td');
           td1.innerHTML = `Nenhuma tabela foi encontrada`;
@@ -146,6 +148,8 @@
           // console.log(element);
 
           let input_checkbox = `<input type="checkbox" name="table_selected" id="table_selected">`;
+
+          td1.innerHTML = input_checkbox;
           td2.innerHTML = `${element.gerbas_nomeTabelaDB}`;
           td3.innerHTML = `${element.quantidade_elementos}`;
           tr.appendChild(td1);
@@ -160,13 +164,18 @@
       })
     })
 
+    // toggle input checkbox quando clicar na td pai
     $('table body').on('click', 'td:first-child', function() {
       let input_checkbox = $(this).children('input');
       let value_input_checkbox = input_checkbox.prop('checked');
 
       input_checkbox.prop('checked', !value_input_checkbox);
     })
+
+    // quando pagina carregar deixar checbox de selecionar todos elementos desabilitada
     $('#select_all').prop('checked', false);
+
+    // quando clicar no input selecionar todos checkbox, alterar valor dos inputs checkbox
     $('#select_all').change((el) => {
       const $this = $(el.target);
       const selected = $this.prop('checked');
@@ -205,7 +214,7 @@
         },
         success: (response) => {
           console.log(response);
-          if (response.error){
+          if (response.error) {
             alert(response.error);
           } else {
             alert(response.success);
