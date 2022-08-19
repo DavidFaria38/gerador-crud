@@ -81,7 +81,6 @@
             </div>
 
             <hr>
-            <br>
 
             <div class="form-group">
               <div class="d-flex justify-content-center">
@@ -146,7 +145,7 @@
           let td3 = document.createElement('td');
           // console.log(element);
 
-          td1.innerHTML = `<input type="checkbox" name="table_selected" id="table_selected">`;
+          let input_checkbox = `<input type="checkbox" name="table_selected" id="table_selected">`;
           td2.innerHTML = `${element.gerbas_nomeTabelaDB}`;
           td3.innerHTML = `${element.quantidade_elementos}`;
           tr.appendChild(td1);
@@ -155,12 +154,19 @@
 
           $('table tbody').append(tr);
         });
+
         $('table').DataTable();
 
       })
     })
 
-    $('input[type=checkbox]').prop('checked', false);
+    $('table body').on('click', 'td:first-child', function() {
+      let input_checkbox = $(this).children('input');
+      let value_input_checkbox = input_checkbox.prop('checked');
+
+      input_checkbox.prop('checked', !value_input_checkbox);
+    })
+    $('#select_all').prop('checked', false);
     $('#select_all').change((el) => {
       const $this = $(el.target);
       const selected = $this.prop('checked');
