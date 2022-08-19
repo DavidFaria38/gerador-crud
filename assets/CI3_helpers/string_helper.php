@@ -33,12 +33,6 @@ function humanize_boolean($value = 0)
     return 'Não';
 }
 
-function humanize_tipo_correcao($tipo = CORRECAO_AUTOMATICA)
-{
-  if ($tipo === CORRECAO_AUTOMATICA) return "Automático";
-  else if ($tipo === CORRECAO_TUTOR) return "Tutor";
-}
-
 function money_to_decimal($money = '')
 {
   $dc = str_replace(".","", $money);

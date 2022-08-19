@@ -23,8 +23,7 @@ $(document).ready(() => {
     onsubmit: false
   });
 
-  // Validação se formulario está valido apra realizar o submit
-  // $('.form_validate').submit((e) => {
+  // Validação se formulario está valido para realizar o submit
   $('.btn-validate').click(() => {
     const form = $('.form_validate');
     if (!form.valid()) {
