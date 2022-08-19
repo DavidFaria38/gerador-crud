@@ -74,9 +74,9 @@
 
             <div class="form-group">
               <div class="d-flex justify-content-center">
-                <button type="button" class="btn btn-primary btn-submit btn-lg m-1">Enviar</button>
-                <a class="btn btn-warning btn-lg m-1" href="<?= BASEURL ?>/create_database">Gerar DB</a>
-                <a class="btn btn-danger btn-lg m-1" href="<?= BASEURL ?>/trucate_database">TRUNCATE tabela</a>
+                <button type="button" class="btn btn-primary btn-submit btn-lg m-1" title="Gerar somente os itens selecionados.">Gerar Itens</button>
+                <a class="btn btn-warning btn-lg m-1" href="<?= BASEURL ?>/create_database" title="Criar banco de dados e tabela do gerador.">CREATE DATABASE</a>
+                <a class="btn btn-danger btn-lg m-1" href="<?= BASEURL ?>/trucate_database" title="Limpar/remover dados da tabela do gerador.">TRUNCATE TABLE</a>
               </div>
             </div>
 
