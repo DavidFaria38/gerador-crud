@@ -93,6 +93,26 @@
 
           </div>
         </div>
+        
+        <br>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title"><h4>Informações</h4></div>
+            <ul>
+              <li>
+                <a href="documentation/Documentação Datte Gerador - CRUD.pdf" target="_blank" rel="noopener noreferrer">
+                  Documentação
+                </a>
+              </li>
+              <li>
+                <a href="documentation/Planilha-gerador.xlsx" target="_blank" rel="noopener noreferrer">
+                  Planilha modelo
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
