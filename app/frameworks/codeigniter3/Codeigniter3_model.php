@@ -73,7 +73,7 @@ class Codeigniter3_model
     
     // se tabela possuir coluna de ativação e desativação de registro 
     $field_activate_register = $this->hasActivateRegister($dataTable);
-    $str_activate_register = ($field_activate_register) ? "\$db->where('{$field_activate_register}', 1);" : "";
+    $str_activate_register = ($field_activate_register) ? "// \$db->where('{$field_activate_register}', 1);" : "";
 
     $str = "
     public function {$this->functionNameRead}(\$item_id = NULL)
@@ -118,7 +118,7 @@ class Codeigniter3_model
 
     // se tabela possuir coluna de ativação e desativação de registro 
     $field_activate_register = $this->hasActivateRegister($dataTable);
-    $str_activate_register = ($field_activate_register) ? "\$db->where('{$field_activate_register}', 1);" : "";
+    $str_activate_register = ($field_activate_register) ? "// \$db->where('{$field_activate_register}', 1);" : "";
 
     $str = "
     public function {$this->functionNameUpdate}(array \$data_update)
@@ -145,7 +145,7 @@ class Codeigniter3_model
 
     // se tabela possuir coluna de ativação e desativação de registro 
     $field_activate_register = $this->hasActivateRegister($dataTable);
-    $str_activate_register = ($field_activate_register) ? "\$db->where('{$field_activate_register}', 1);" : "";
+    $str_activate_register = ($field_activate_register) ? "// \$db->where('{$field_activate_register}', 1);" : "";
 
     $str = "
     public function {$this->functionNameDelete}(\$item_id)
