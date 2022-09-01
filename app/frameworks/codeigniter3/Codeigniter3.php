@@ -37,11 +37,12 @@ class Codeigniter3 implements Interface_framework
       'directoryView' => '',
 
       'strOptionalControllerConstructor' => "\nif (!is_logged_sistema()) return redirect(base_url_sistema('login'));", // para inserir no __constructor do controller
-      'strOptionalPathModel' => "sistema/evento/", // para inserir no __constroctor do controller, caminho do arquivo model
-      'strOptionalPathView' => "sistema/evento/", // para inserir no controller, caminho do arquivo view
-      'strOptionalPreBaseUrl' => "sistema/", // prefixo para campo de redirecionamento, controller e views
-      'strOptionalUrlPath' => "sistema/", // para inserir na url de routes, url para acesso
-      'strOptionalUrlControllerPath' => "sistema/evento/", // para inserir no caminho do controller em routes
+      'strOptionalPathModel' => "", // para inserir no __constroctor do controller, caminho do arquivo model
+      'strOptionalPathView' => "", // para inserir no controller, caminho do arquivo view
+      'strOptionalFunctionRenderTemplateView' => "", // para inserir no controller, função helper render_template() para renderizar as views
+      'strOptionalPreBaseUrl' => "", // prefixo para campo de redirecionamento, controller e views
+      'strOptionalUrlPath' => "", // para inserir na url de routes, url para acesso
+      'strOptionalUrlControllerPath' => "", // para inserir no caminho do controller em routes
     );
 
   }

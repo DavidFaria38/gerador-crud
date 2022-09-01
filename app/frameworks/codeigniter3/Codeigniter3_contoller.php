@@ -28,6 +28,7 @@ class Codeigniter3_contoller
   private string $strOptionalControllerConstructor;
   private string $strOptionalPathModel;
   private string $strOptionalPathView;
+  private string $strOptionalFunctionRenderTemplateView;
   private string $strOptionalPreBaseUrl;
 
   function __construct(array $config = array())
@@ -54,6 +55,7 @@ class Codeigniter3_contoller
     $this->strOptionalControllerConstructor = $config['strOptionalControllerConstructor'];
     $this->strOptionalPathModel = $config['strOptionalPathModel'];
     $this->strOptionalPathView = $config['strOptionalPathView'];
+    $this->strOptionalFunctionRenderTemplateView = (empty($config['strOptionalFunctionRenderTemplateView'])) ? 'render_template' : $config['strOptionalFunctionRenderTemplateView'];
     $this->strOptionalPreBaseUrl = $config['strOptionalPreBaseUrl'];
   }
 
@@ -250,14 +252,14 @@ class Codeigniter3_contoller
           'data_related_tables' => \$data_related_tables,
         );
 
-        render_template('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewCreate}', \$data_view);
+        {$this->strOptionalFunctionRenderTemplateView}('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewCreate}', \$data_view);
       }
       ";
     } else {
       $str = "
       public function {$this->functionNameCreate}()
       {
-        render_template('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewCreate}');
+        {$this->strOptionalFunctionRenderTemplateView}('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewCreate}');
       }
       ";
     }
@@ -312,7 +314,7 @@ class Codeigniter3_contoller
         'data' => \$dados_item
       );
 
-      render_template('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewRead}', \$data_view);
+      {$this->strOptionalFunctionRenderTemplateView}('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewRead}', \$data_view);
     }
     ";
 
@@ -350,7 +352,7 @@ class Codeigniter3_contoller
           'item_id' => \$item_id
         );
 
-        render_template('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
+        {$this->strOptionalFunctionRenderTemplateView}('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
       }
       ";
     } else {
@@ -376,7 +378,7 @@ class Codeigniter3_contoller
           'item_id' => \$item_id
         );
 
-        render_template('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
+        {$this->strOptionalFunctionRenderTemplateView}('{$this->strOptionalPathView}{$this->dirView}/{$this->fileNameViewUpdate}', \$data_view);
       }
       ";
     }
