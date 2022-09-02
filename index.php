@@ -2,6 +2,7 @@
 
 require_once 'app/DataGerador.php';
 require_once 'app/config/constants.php';
+require_once 'app/config/helper.php';
 require_once 'app/config/Router.php';
 require_once 'app/config/Request.php';
 require_once 'app/Main.php';
@@ -47,12 +48,12 @@ $router->get('/create_database', function () {
   $main = new Main();
   $main->makeDB();
   
-  // header('Location : http://localhost/git/gerador_crud/', true, 200); die;
+  redirect('http://localhost/git/gerador_crud/');
 });
 
 $router->get('/trucate_database', function () {
   $main = new Main();
   $main->truncateTable();
-  
-  // header('Location : http://localhost/git/gerador_crud/', true, 200); die;
+
+  redirect('http://localhost/git/gerador_crud/');
 });
