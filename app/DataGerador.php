@@ -27,6 +27,7 @@ class DataGerador
             GERADOR_COL_NAMETABLE_FOREIGN => strtolower($table_item[GERADOR_COL_NAMETABLE_FOREIGN]),
             GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE => strtolower($table_item[GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE]),
             GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE => strtolower($table_item[GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE]),
+            GERADOR_COL_ACTIVE_FIELD_FOREIGN_TABLE => strtolower($table_item[GERADOR_COL_ACTIVE_FIELD_FOREIGN_TABLE]),
             
             GERADOR_COL_TYPEFIELD_HTML => strtolower($table_item[GERADOR_COL_TYPEFIELD_HTML]),
             GERADOR_COL_FUNCTION_FIELD_TYPE => strtolower($table_item[GERADOR_COL_FUNCTION_FIELD_TYPE]),

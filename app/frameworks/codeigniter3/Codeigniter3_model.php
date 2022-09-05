@@ -255,10 +255,17 @@ class Codeigniter3_model
 
     foreach ($arr_table_foreign_data as $key => $data_input) { // Gerar joins com tabelas estrangeiras
       $foreign_table_name = $data_input[GERADOR_COL_NAMETABLE_FOREIGN];
+      $foreign_table_activate_register = $data_input[GERADOR_COL_ACTIVE_FIELD_FOREIGN_TABLE];
+
+      if (!empty($foreign_table_activate_register)) { // Tabela estrangeira possui coluna ativadora de registro?
+        $query_where_activate_register = "\n\$db->where('{$foreign_table_activate_register}', 1);";
+      } else {
+        $query_where_activate_register = "";
+      }
 
       $str_join .= "
       \$db->select('*');
-      \$db->from('{$foreign_table_name}');
+      \$db->from('{$foreign_table_name}');{$query_where_activate_register}
       \$data = \$db->get()->result();
       \$arr_data['{$foreign_table_name}'] = \$data;\n";
     }

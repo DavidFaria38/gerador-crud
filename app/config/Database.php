@@ -100,6 +100,7 @@ class Database
     $TabelaRelacionada = GERADOR_COL_NAMETABLE_FOREIGN;
     $TabelaRelacionada_CodigoCampo = GERADOR_COL_PK_FIELD_NAME_FOREIGN_TABLE;
     $TabelaRelacionada_valorCampo = GERADOR_COL_VALUE_FIELD_FOREIGN_TABLE;
+    $TabelaRelacionada_ativoCampo = GERADOR_COL_ACTIVE_FIELD_FOREIGN_TABLE;
     $FuncaoCampo  = GERADOR_COL_FUNCTION_FIELD;
     $FuncaoCampoDestino = GERADOR_COL_FUNCTION_FIELD_TYPE;
     
@@ -125,6 +126,7 @@ class Database
       {$TabelaRelacionada} varchar(200),
       {$TabelaRelacionada_CodigoCampo} varchar(200),
       {$TabelaRelacionada_valorCampo} varchar(200),
+      {$TabelaRelacionada_ativoCampo} varchar(200),
       {$FuncaoCampo} varchar(200),
       {$FuncaoCampoDestino} varchar(20),
       PRIMARY KEY ({$codigo})
